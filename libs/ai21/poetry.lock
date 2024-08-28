@@ -329,13 +329,13 @@ trio = ["trio (>=0.22.0,<0.26.0)"]
 
 [[package]]
 name = "httpx"
-version = "0.27.0"
+version = "0.27.2"
 description = "The next generation HTTP client."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "httpx-0.27.0-py3-none-any.whl", hash = "sha256:71d5465162c13681bff01ad59b2cc68dd838ea1f10e51574bac27103f00c91a5"},
-    {file = "httpx-0.27.0.tar.gz", hash = "sha256:a0cb88a46f32dc874e04ee956e4c2764aba2aa228f650b06788ba6bda2962ab5"},
+    {file = "httpx-0.27.2-py3-none-any.whl", hash = "sha256:7bb2708e112d8fdd7829cd4243970f0c223274051cb35ee80c03301ee29a3df0"},
+    {file = "httpx-0.27.2.tar.gz", hash = "sha256:f7c2be1d2f3c3c3160d441802406b206c2b76f5947b11115e6df10c6c65e66c2"},
 ]
 
 [package.dependencies]
@@ -350,6 +350,7 @@ brotli = ["brotli", "brotlicffi"]
 cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<14)"]
 http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (==1.*)"]
+zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "huggingface-hub"
@@ -434,12 +435,12 @@ files = [
 
 [[package]]
 name = "langchain-core"
-version = "0.2.35"
+version = "0.2.36"
 description = "Building applications with LLMs through composability"
 optional = false
 python-versions = ">=3.8.1,<4.0"
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 jsonpatch = "^1.33"
@@ -454,8 +455,11 @@ tenacity = "^8.1.0,!=8.4.0"
 typing-extensions = ">=4.7"
 
 [package.source]
-type = "directory"
-url = "../../core"
+type = "git"
+url = "https://github.com/langchain-ai/langchain.git"
+reference = "HEAD"
+resolved_reference = "095b712a267c71b8f013ce479913cc99706ef96f"
+subdirectory = "libs/core"
 
 [[package]]
 name = "langchain-standard-tests"
@@ -464,7 +468,7 @@ description = "Standard tests for LangChain implementations"
 optional = false
 python-versions = ">=3.8.1,<4.0"
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 httpx = "^0.27.0"
@@ -472,8 +476,11 @@ langchain-core = ">=0.1.40,<0.3"
 pytest = ">=7,<9"
 
 [package.source]
-type = "directory"
-url = "../../standard-tests"
+type = "git"
+url = "https://github.com/langchain-ai/langchain.git"
+reference = "HEAD"
+resolved_reference = "095b712a267c71b8f013ce479913cc99706ef96f"
+subdirectory = "libs/standard-tests"
 
 [[package]]
 name = "langchain-text-splitters"
@@ -482,24 +489,27 @@ description = "LangChain text splitting utilities"
 optional = false
 python-versions = ">=3.8.1,<4.0"
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 langchain-core = "^0.2.10"
 
 [package.source]
-type = "directory"
-url = "../../text-splitters"
+type = "git"
+url = "https://github.com/langchain-ai/langchain.git"
+reference = "HEAD"
+resolved_reference = "095b712a267c71b8f013ce479913cc99706ef96f"
+subdirectory = "libs/text-splitters"
 
 [[package]]
 name = "langsmith"
-version = "0.1.104"
+version = "0.1.106"
 description = "Client library to connect to the LangSmith LLM Tracing and Evaluation Platform."
 optional = false
 python-versions = "<4.0,>=3.8.1"
 files = [
-    {file = "langsmith-0.1.104-py3-none-any.whl", hash = "sha256:049cd312952a0db9f5edeed3b9a8616e66ef86e5490c835c8bb054569203b0d0"},
-    {file = "langsmith-0.1.104.tar.gz", hash = "sha256:7892dfe452d143fba573d7eb28dbff3202d2f2daacab8c7276ffe4a850179d4d"},
+    {file = "langsmith-0.1.106-py3-none-any.whl", hash = "sha256:a418161c98de72ee2c6eea6667c6217814b67db4b9a3a024788013384216ff35"},
+    {file = "langsmith-0.1.106.tar.gz", hash = "sha256:64a890a05640d64692f5515ebb444b0457332a9cf9e7605c4651de6737a7d3a0"},
 ]
 
 [package.dependencies]
@@ -1319,4 +1329,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8.1,<4.0"
-content-hash = "32e1777e151eef2eb3775c4f1707ec4e80241a08fd4beed2d60a36f58d68dfea"
+content-hash = "95266f41d77d02750ee66a6be5311389ddb0e49a9310b050352c67c219475bd7"
