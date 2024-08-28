@@ -1,0 +1,9 @@
+lxml-stubs
+pandas-stubs
+types-PyYAML
+types-Pygments
+types-beautifulsoup4
+types-colorama
+types-psutil
+types-requests
+types-setuptools

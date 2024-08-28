@@ -1,29 +1,13 @@
-# 🦜️🔗 LangChain {partner}
+# 🦜️🔗 LangChain AI21
 
-This repository contains {n} packages with {partner} integrations with LangChain:
+This repository contains 1 package with AI21 integrations with LangChain:
 
-- [langchain-{package}](https://pypi.org/project/langchain-{package}/) integrates [{product}}]({product_link}).
-{- ... if more packages}
+- [langchain-ai21](https://pypi.org/project/langchain-ai21/)
 
 ## Initial Repo Checklist (Remove this section after completing)
 
 This setup assumes that the partner package is already split. For those instructions,
 see [these docs](https://python.langchain.com/docs/contributing/integrations#partner-packages).
-
-Code
-
-- [ ] Fill out the readme above (for folks that follow pypi link)
-- [ ] Copy package into /libs folder
-- [ ] Update these fields in /libs/*/pyproject.toml
-
-    - `tool.poetry.repository`
-    - `tool.poetry.urls["Source Code"]`
-
-Workflow code
-
-- [ ] Add secrets as env vars in .github/workflows/_release.yml
-- [ ] Populate .github/workflows/_release.yml with `on.workflow_dispatch.inputs.working-directory.default`
-- [ ] Configure `LIB_DIRS` in .github/scripts/check_diff.py
 
 In github
 
@@ -47,5 +31,5 @@ Slack
 - [ ] Set up release alerting in Slack (ask Erick for help)
 
 release:
-/github subscribe langchain-ai/langchain-{partner} releases workflows:{name:"release"}
-/github unsubscribe langchain-ai/langchain-{partner} issues pulls commits deployments
+/github subscribe langchain-ai/langchain-ai21 releases workflows:{name:"release"}
+/github unsubscribe langchain-ai/langchain-ai21 issues pulls commits deployments
