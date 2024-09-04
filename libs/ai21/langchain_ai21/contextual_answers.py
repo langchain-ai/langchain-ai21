@@ -10,6 +10,7 @@ from typing import (
 
 from langchain_core.documents import Document
 from langchain_core.runnables import RunnableConfig, RunnableSerializable, ensure_config
+from pydantic import ConfigDict
 
 from langchain_ai21.ai21_base import AI21Base
 
@@ -28,10 +29,9 @@ class ContextualAnswerInput(TypedDict):
 class AI21ContextualAnswers(RunnableSerializable[ContextualAnswerInput, str], AI21Base):
     """Runnable for the AI21 Contextual Answers API."""
 
-    class Config:
-        """Configuration for this pydantic object."""
-
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+    )
 
     @property
     def InputType(self) -> Type[ContextualAnswerInput]:
