@@ -87,3 +87,7 @@ class TestAI21Jamba1_5(BaseTestAI21):
     @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
     def test_structured_output_pydantic_2_v1(self, model: BaseChatModel) -> None:
         super().test_structured_output_pydantic_2_v1(model)
+
+    @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
+    def test_structured_output_optional_param(self, model: BaseChatModel) -> None:
+        super().test_structured_output_pydantic_2_v1(model)
