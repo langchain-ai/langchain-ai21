@@ -23,14 +23,13 @@ from langchain_core.language_models.chat_models import (
     LangSmithParams,
     generate_from_stream,
 )
-from langchain_core.messages import (
-    BaseMessage,
-)
+from langchain_core.messages import BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult
-from langchain_core.pydantic_v1 import root_validator
 from langchain_core.runnables import Runnable
 from langchain_core.tools import BaseTool
 from langchain_core.utils.function_calling import convert_to_openai_tool
+from pydantic import ConfigDict, model_validator
+from typing_extensions import Self
 
 from langchain_ai21.ai21_base import AI21Base
 from langchain_ai21.chat.chat_adapter import ChatAdapter
@@ -98,17 +97,16 @@ class ChatAI21(BaseChatModel, AI21Base):
 
     _chat_adapter: ChatAdapter
 
-    @root_validator(pre=False, skip_on_failure=True)
-    def validate_environment(cls, values: Dict) -> Dict:
+    @model_validator(mode="after")
+    def validate_environment(self) -> Self:
         """Validate the environment."""
-        model = values["model"]
-        values["_chat_adapter"] = create_chat_adapter(model)
-        return values
+        model = self.model
+        self._chat_adapter = create_chat_adapter(model)
+        return self
 
-    class Config:
-        """Configuration for this pydantic object."""
-
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+    )
 
     @property
     def _llm_type(self) -> str:

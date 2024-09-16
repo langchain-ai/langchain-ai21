@@ -10,8 +10,8 @@ from typing import (
 
 from ai21.models import DocumentType
 from langchain_core.documents import Document
-from langchain_core.pydantic_v1 import SecretStr
 from langchain_text_splitters import TextSplitter
+from pydantic import SecretStr
 
 from langchain_ai21.ai21_base import AI21Base
 
@@ -41,12 +41,15 @@ class AI21SemanticTextSplitter(TextSplitter):
             **kwargs,
         )
 
-        self._segmentation = AI21Base(
+        base_kwargs: dict = dict(
             client=client,
             api_key=api_key,
             api_host=api_host,
             timeout_sec=timeout_sec,
             num_retries=num_retries,
+        )
+        self._segmentation = AI21Base(
+            **{k: v for k, v in base_kwargs.items() if v is not None}
         ).client.segmentation
 
     def split_text(self, source: str) -> List[str]:

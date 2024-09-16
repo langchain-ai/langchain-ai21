@@ -14,6 +14,7 @@ from langchain_core.callbacks import (
 )
 from langchain_core.language_models import BaseLLM
 from langchain_core.outputs import Generation, LLMResult
+from pydantic import ConfigDict
 
 from langchain_ai21.ai21_base import AI21Base
 
@@ -78,10 +79,9 @@ class AI21LLM(BaseLLM, AI21Base):
     custom_model: Optional[str] = None
     epoch: Optional[int] = None
 
-    class Config:
-        """Configuration for this pydantic object."""
-
-        allow_population_by_field_name = True
+    model_config = ConfigDict(
+        populate_by_name=True,
+    )
 
     @property
     def _llm_type(self) -> str:
