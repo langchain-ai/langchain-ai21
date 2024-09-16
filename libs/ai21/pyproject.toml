@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "langchain-ai21"
-version = "0.1.8"
+version = "0.1.9"
 description = "An integration package connecting AI21 and LangChain"
 authors = []
 readme = "README.md"
@@ -20,8 +20,8 @@ disallow_untyped_defs = "True"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
-langchain-core = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/core", branch = "v0.3rc" }
-langchain-text-splitters = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/text-splitters", branch = "v0.3rc"}
+langchain-core = "^0.3"
+langchain-text-splitters = "^0.3"
 ai21 = "^2.14.1"
 
 [tool.ruff.lint]
@@ -64,7 +64,7 @@ pytest-mock = "^3.10.0"
 syrupy = "^4.0.2"
 pytest-watcher = "^0.3.4"
 pytest-asyncio = "^0.21.1"
-langchain-standard-tests = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/standard-tests", branch = "v0.3rc"}
+langchain-standard-tests = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/standard-tests" }
 
 [tool.poetry.group.codespell.dependencies]
 codespell = "^2.2.0"
