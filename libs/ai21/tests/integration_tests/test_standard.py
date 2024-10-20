@@ -70,6 +70,7 @@ class TestAI21Jamba1_5(BaseTestAI21):
     def chat_model_params(self) -> dict:
         return {
             "model": "jamba-1.5-mini",
+            "temperature": 0.0,
         }
 
     @pytest.mark.xfail(reason="Prompt doesn't generate tool calls for Jamba 1.5.")
