@@ -14,7 +14,6 @@ from langchain_core.utils.function_calling import convert_to_openai_tool
 
 from langchain_ai21.chat_models import ChatAI21
 from tests.unit_tests.conftest import (
-    J2_CHAT_MODEL_NAME,
     JAMBA_1_5_LARGE_CHAT_MODEL_NAME,
     JAMBA_1_5_MINI_CHAT_MODEL_NAME,
     JAMBA_CHAT_MODEL_NAME,
@@ -26,14 +25,12 @@ rate_limiter = InMemoryRateLimiter(requests_per_second=0.5)
 
 @pytest.mark.parametrize(
     ids=[
-        "when_j2_model",
         "when_jamba_model",
         "when_jamba1.5-mini_model",
         "when_jamba1.5-large_model",
     ],
     argnames=["model"],
     argvalues=[
-        (J2_CHAT_MODEL_NAME,),
         (JAMBA_CHAT_MODEL_NAME,),
         (JAMBA_1_5_MINI_CHAT_MODEL_NAME,),
         (JAMBA_1_5_LARGE_CHAT_MODEL_NAME,),
@@ -49,8 +46,6 @@ def test_invoke(model: str) -> None:
 
 @pytest.mark.parametrize(
     ids=[
-        "when_j2_model_num_results_is_1",
-        "when_j2_model_num_results_is_3",
         "when_jamba_model_n_is_1",
         "when_jamba_model_n_is_3",
         "when_jamba1.5_mini_model_n_is_1",
@@ -60,8 +55,6 @@ def test_invoke(model: str) -> None:
     ],
     argnames=["model", "num_results"],
     argvalues=[
-        (J2_CHAT_MODEL_NAME, 1),
-        (J2_CHAT_MODEL_NAME, 3),
         (JAMBA_CHAT_MODEL_NAME, 1),
         (JAMBA_CHAT_MODEL_NAME, 3),
         (JAMBA_1_5_MINI_CHAT_MODEL_NAME, 1),
@@ -92,14 +85,12 @@ def test_generation(model: str, num_results: int) -> None:
 
 @pytest.mark.parametrize(
     ids=[
-        "when_j2_model",
         "when_jamba_model",
         "when_jamba1.5_mini_model",
         "when_jamba1.5_large_model",
     ],
     argnames=["model"],
     argvalues=[
-        (J2_CHAT_MODEL_NAME,),
         (JAMBA_CHAT_MODEL_NAME,),
         (JAMBA_1_5_MINI_CHAT_MODEL_NAME,),
         (JAMBA_1_5_LARGE_CHAT_MODEL_NAME,),

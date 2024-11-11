@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "langchain-ai21"
-version = "0.1.9"
+version = "1.0.0"
 description = "An integration package connecting AI21 and LangChain"
 authors = []
 readme = "README.md"
@@ -21,8 +21,7 @@ disallow_untyped_defs = "True"
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
 langchain-core = "^0.3"
-langchain-text-splitters = "^0.3"
-ai21 = "^2.14.1"
+ai21 = "^3.0.0"
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
@@ -46,16 +45,8 @@ optional = true
 [tool.poetry.group.codespell]
 optional = true
 
-[tool.poetry.group.test_integration]
-optional = true
-
 [tool.poetry.group.lint]
 optional = true
-
-[tool.poetry.group.dev]
-optional = true
-
-[tool.poetry.group.dev.dependencies]
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.0"
@@ -68,8 +59,6 @@ langchain-standard-tests = { git = "https://github.com/langchain-ai/langchain.gi
 
 [tool.poetry.group.codespell.dependencies]
 codespell = "^2.2.0"
-
-[tool.poetry.group.test_integration.dependencies]
 
 [tool.poetry.group.lint.dependencies]
 ruff = "^0.5"
