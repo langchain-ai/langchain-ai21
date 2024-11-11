@@ -45,8 +45,16 @@ optional = true
 [tool.poetry.group.codespell]
 optional = true
 
+[tool.poetry.group.test_integration]
+optional = true
+
 [tool.poetry.group.lint]
 optional = true
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.0"
@@ -59,6 +67,8 @@ langchain-standard-tests = { git = "https://github.com/langchain-ai/langchain.gi
 
 [tool.poetry.group.codespell.dependencies]
 codespell = "^2.2.0"
+
+[tool.poetry.group.test_integration.dependencies]
 
 [tool.poetry.group.lint.dependencies]
 ruff = "^0.5"
