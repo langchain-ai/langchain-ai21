@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Iterator, List, Literal, Optional, Union, cast, overload
+from typing import Any, Dict, Iterator, List, Literal, Optional, Union, overload
 
-from ai21.models import ChatMessage as J2ChatMessage
 from ai21.models import RoleType
 from ai21.models.chat import (
     AssistantMessage as AI21AssistantMessage,
@@ -30,7 +29,7 @@ from langchain_core.messages.ai import UsageMetadata
 from langchain_core.output_parsers.openai_tools import parse_tool_call
 from langchain_core.outputs import ChatGenerationChunk
 
-_ChatMessageTypes = Union[AI21ChatMessage, J2ChatMessage]
+_ChatMessageTypes = Union[AI21ChatMessage]
 _SYSTEM_ERR_MESSAGE = "System message must be at beginning of message list."
 _ROLE_TYPE = Union[str, RoleType]
 
@@ -57,8 +56,6 @@ class ChatAdapter(ABC):
         return self._chat_message(role=role, message=message)
 
     def _parse_role(self, message: BaseMessage) -> _ROLE_TYPE:
-        role = None
-
         if isinstance(message, SystemMessage):
             return RoleType.SYSTEM
 
@@ -70,13 +67,6 @@ class ChatAdapter(ABC):
 
         if isinstance(message, ToolMessage):
             return RoleType.TOOL
-
-        if isinstance(self, J2ChatAdapter):
-            if not role:
-                raise ValueError(
-                    f"Could not resolve role type from message {message}. "
-                    f"Only support {HumanMessage.__name__} and {AIMessage.__name__}."
-                )
 
         # if it gets here, we rely on the server to handle the role type
         return message.type
@@ -123,62 +113,6 @@ class ChatAdapter(ABC):
             )
 
         return message.content
-
-
-class J2ChatAdapter(ChatAdapter):
-    """Adapter for J2Chat models."""
-
-    def convert_messages(self, messages: List[BaseMessage]) -> Dict[str, Any]:
-        system_message = ""
-        converted_messages = []  # type: ignore
-
-        for i, message in enumerate(messages):
-            if message.type == "system":
-                if i != 0:
-                    raise ValueError(_SYSTEM_ERR_MESSAGE)
-                else:
-                    system_message = self._get_system_message_from_message(message)
-            else:
-                converted_message = self._convert_message_to_ai21_message(message)
-                converted_messages.append(converted_message)
-
-        return {"system": system_message, "messages": converted_messages}
-
-    def _chat_message(
-        self,
-        role: _ROLE_TYPE,
-        message: BaseMessage,
-    ) -> J2ChatMessage:
-        return J2ChatMessage(role=RoleType(role), text=cast(str, message.content))
-
-    @overload
-    def call(
-        self,
-        client: Any,
-        stream: Literal[True],
-        **params: Any,
-    ) -> Iterator[ChatGenerationChunk]: ...
-
-    @overload
-    def call(
-        self,
-        client: Any,
-        stream: Literal[False],
-        **params: Any,
-    ) -> List[BaseMessage]: ...
-
-    def call(
-        self,
-        client: Any,
-        stream: Literal[True] | Literal[False],
-        **params: Any,
-    ) -> List[BaseMessage] | Iterator[ChatGenerationChunk]:
-        if stream:
-            raise NotImplementedError("Streaming is not supported for Jurassic models.")
-
-        response = client.chat.create(**params)
-
-        return [AIMessage(output.text) for output in response.outputs]
 
 
 class JambaChatCompletionsAdapter(ChatAdapter):

@@ -17,7 +17,6 @@ from tests.unit_tests.conftest import (
     JAMBA_1_5_LARGE_CHAT_MODEL_NAME,
     JAMBA_1_5_MINI_CHAT_MODEL_NAME,
     JAMBA_CHAT_MODEL_NAME,
-    JAMBA_FAMILY_MODEL_NAMES,
 )
 
 rate_limiter = InMemoryRateLimiter(requests_per_second=0.5)
@@ -53,7 +52,7 @@ def test_invoke(model: str) -> None:
         "when_jamba1.5_large_model_n_is_1",
         "when_jamba1.5_large_model_n_is_3",
     ],
-    argnames=["model", "num_results"],
+    argnames=["model", "n"],
     argvalues=[
         (JAMBA_CHAT_MODEL_NAME, 1),
         (JAMBA_CHAT_MODEL_NAME, 3),
@@ -63,20 +62,18 @@ def test_invoke(model: str) -> None:
         (JAMBA_1_5_LARGE_CHAT_MODEL_NAME, 3),
     ],
 )
-def test_generation(model: str, num_results: int) -> None:
+def test_generation(model: str, n: int) -> None:
     """Test generation with multiple models and different result counts."""
-    # Determine the configuration key based on the model type
-    config_key = "n" if model in JAMBA_FAMILY_MODEL_NAMES else "num_results"
 
     # Create the model instance using the appropriate key for the result count
-    llm = ChatAI21(model=model, rate_limiter=rate_limiter, **{config_key: num_results})  # type: ignore[arg-type, arg-type, arg-type, arg-type, arg-type, arg-type, arg-type, arg-type, arg-type, arg-type]
+    llm = ChatAI21(model=model, rate_limiter=rate_limiter, **{"n": n})  # type: ignore[arg-type, arg-type, arg-type, arg-type, arg-type, arg-type, arg-type, arg-type, arg-type, arg-type]
 
     message = HumanMessage(content="Hello, this is a test. Can you help me please?")
 
     result = llm.generate([[message]], config=dict(tags=["foo"]))
 
     for generations in result.generations:
-        assert len(generations) == num_results
+        assert len(generations) == n
         for generation in generations:
             assert isinstance(generation, ChatGeneration)
             assert isinstance(generation.text, str)
@@ -118,15 +115,6 @@ def test__chat_stream() -> None:
     for chunk in llm.stream([message]):
         assert isinstance(chunk, AIMessageChunk)
         assert isinstance(chunk.content, str)
-
-
-def test__j2_chat_stream__should_raise_error() -> None:
-    llm = ChatAI21(model="j2-ultra")  # type: ignore[call-arg]
-    message = HumanMessage(content="What is the meaning of life?")
-
-    with pytest.raises(NotImplementedError):
-        for _ in llm.stream([message]):
-            pass
 
 
 @pytest.mark.parametrize(
