@@ -27,29 +27,6 @@ class BaseTestAI21(ChatModelIntegrationTests):
         super().test_usage_metadata(model)
 
 
-class TestAI21J2(BaseTestAI21):
-    has_tool_calling = False
-
-    @property
-    def chat_model_params(self) -> dict:
-        return {
-            "model": "j2-ultra",
-            "rate_limiter": rate_limiter,
-        }
-
-    @pytest.mark.xfail(reason="Streaming is not supported for Jurassic models.")
-    def test_stream(self, model: BaseChatModel) -> None:
-        super().test_stream(model)
-
-    @pytest.mark.xfail(reason="Streaming is not supported for Jurassic models.")
-    async def test_astream(self, model: BaseChatModel) -> None:
-        await super().test_astream(model)
-
-    @pytest.mark.xfail(reason="Streaming is not supported for Jurassic models.")
-    def test_usage_metadata_streaming(self, model: BaseChatModel) -> None:
-        super().test_usage_metadata_streaming(model)
-
-
 class TestAI21Jamba(BaseTestAI21):
     has_tool_calling = False
 

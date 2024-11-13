@@ -2,13 +2,13 @@
 
 [[package]]
 name = "ai21"
-version = "2.14.1"
+version = "3.0.0"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "ai21-2.14.1-py3-none-any.whl", hash = "sha256:618c0b5c025123c703645258472330a07ae2de17020438f6a33b29668275995c"},
-    {file = "ai21-2.14.1.tar.gz", hash = "sha256:05d9626b82206e0a5be43d17c39d4e0c7b51c2b7634d2ea38a2c698ac3e2fd5b"},
+    {file = "ai21-3.0.0-py3-none-any.whl", hash = "sha256:b075a7ad5adc27da1ed929c258476ea009905649a41cf66bc718aea3791aaaa3"},
+    {file = "ai21-3.0.0.tar.gz", hash = "sha256:c0587c5d39e36c792eff852707f9654fcfb29a0839edf1998392fddf595baa02"},
 ]
 
 [package.dependencies]
@@ -477,20 +477,6 @@ url = "https://github.com/langchain-ai/langchain.git"
 reference = "HEAD"
 resolved_reference = "135afdf4fbc74a1da0b5075403ef1cb1020e4077"
 subdirectory = "libs/standard-tests"
-
-[[package]]
-name = "langchain-text-splitters"
-version = "0.3.0"
-description = "LangChain text splitting utilities"
-optional = false
-python-versions = "<4.0,>=3.9"
-files = [
-    {file = "langchain_text_splitters-0.3.0-py3-none-any.whl", hash = "sha256:e84243e45eaff16e5b776cd9c81b6d07c55c010ebcb1965deb3d1792b7358e83"},
-    {file = "langchain_text_splitters-0.3.0.tar.gz", hash = "sha256:f9fe0b4d244db1d6de211e7343d4abc4aa90295aa22e1f0c89e51f33c55cd7ce"},
-]
-
-[package.dependencies]
-langchain-core = ">=0.3.0,<0.4.0"
 
 [[package]]
 name = "langsmith"
@@ -1316,4 +1302,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "202f2fda08b9b88fbf6489cc276af0a28d22acaa2f7856e43953aac5e3aca8ae"
+content-hash = "44ea48cdffe1153d78ad408bc22679495bd4f5e981acf40efa36d793202562c6"
