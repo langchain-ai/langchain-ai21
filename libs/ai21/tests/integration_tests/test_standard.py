@@ -4,11 +4,10 @@ import time
 from typing import Optional, Type
 
 import pytest
+from langchain_ai21 import ChatAI21
 from langchain_core.language_models import BaseChatModel
 from langchain_core.rate_limiters import InMemoryRateLimiter
 from langchain_standard_tests.integration_tests import ChatModelIntegrationTests
-
-from langchain_ai21 import ChatAI21
 
 rate_limiter = InMemoryRateLimiter(requests_per_second=0.5)
 
@@ -55,12 +54,20 @@ class TestAI21Jamba1_5(BaseTestAI21):
         super().test_tool_calling(model)
 
     @pytest.mark.xfail(reason="Prompt doesn't generate tool calls for Jamba 1.5.")
+    async def test_tool_calling_async(self, model: BaseChatModel) -> None:
+        super().test_tool_calling_async(model)
+
+    @pytest.mark.xfail(reason="Prompt doesn't generate tool calls for Jamba 1.5.")
     def test_tool_calling_with_no_arguments(self, model: BaseChatModel) -> None:
         super().test_tool_calling_with_no_arguments(model)
 
     @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
     def test_structured_output(self, model: BaseChatModel) -> None:
         super().test_structured_output(model)
+
+    @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
+    async def test_structured_output_async(self, model: BaseChatModel) -> None:
+        super().test_structured_output_async(model)
 
     @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
     def test_structured_output_pydantic_2_v1(self, model: BaseChatModel) -> None:
