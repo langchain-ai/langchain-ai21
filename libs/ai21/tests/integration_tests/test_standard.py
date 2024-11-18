@@ -55,12 +55,20 @@ class TestAI21Jamba1_5(BaseTestAI21):
         super().test_tool_calling(model)
 
     @pytest.mark.xfail(reason="Prompt doesn't generate tool calls for Jamba 1.5.")
+    async def test_tool_calling_async(self, model: BaseChatModel) -> None:
+        await super().test_tool_calling_async(model)
+
+    @pytest.mark.xfail(reason="Prompt doesn't generate tool calls for Jamba 1.5.")
     def test_tool_calling_with_no_arguments(self, model: BaseChatModel) -> None:
         super().test_tool_calling_with_no_arguments(model)
 
     @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
     def test_structured_output(self, model: BaseChatModel) -> None:
         super().test_structured_output(model)
+
+    @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
+    async def test_structured_output_async(self, model: BaseChatModel) -> None:
+        await super().test_structured_output_async(model)
 
     @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
     def test_structured_output_pydantic_2_v1(self, model: BaseChatModel) -> None:
