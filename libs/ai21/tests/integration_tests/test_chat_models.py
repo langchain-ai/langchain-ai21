@@ -1,7 +1,6 @@
 """Test ChatAI21 chat model."""
 
 import pytest
-from langchain_ai21.chat_models import ChatAI21
 from langchain_core.messages import (
     AIMessageChunk,
     HumanMessage,
@@ -12,6 +11,8 @@ from langchain_core.outputs import ChatGeneration
 from langchain_core.rate_limiters import InMemoryRateLimiter
 from langchain_core.tools import tool
 from langchain_core.utils.function_calling import convert_to_openai_tool
+
+from langchain_ai21.chat_models import ChatAI21
 from tests.unit_tests.conftest import (
     JAMBA_1_5_LARGE_CHAT_MODEL_NAME,
     JAMBA_1_5_MINI_CHAT_MODEL_NAME,
