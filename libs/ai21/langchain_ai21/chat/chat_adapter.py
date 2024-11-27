@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+import json
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Iterator, List, Literal, Optional, Union, overload
 
 from ai21.models import RoleType
-from ai21.models.chat import (
-    AssistantMessage as AI21AssistantMessage,
-)
-from ai21.models.chat import ChatCompletionChunk, ChatMessageParam
+from ai21.models.chat import AssistantMessage as AI21AssistantMessage
+from ai21.models.chat import ChatCompletionChunk
 from ai21.models.chat import ChatMessage as AI21ChatMessage
+from ai21.models.chat import ChatMessageParam
 from ai21.models.chat import SystemMessage as AI21SystemMessage
 from ai21.models.chat import ToolCall as AI21ToolCall
 from ai21.models.chat import ToolFunction as AI21ToolFunction
@@ -141,7 +141,7 @@ class JambaChatCompletionsAdapter(ChatAdapter):
                 type="function",
                 function=AI21ToolFunction(
                     name=lc_tool_call["name"],
-                    arguments=str(lc_tool_call["args"]),
+                    arguments=json.dumps(lc_tool_call["args"]),
                 ),
             )
             ai21_tool_calls.append(ai21_tool_call)
