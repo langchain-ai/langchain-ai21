@@ -13,8 +13,10 @@ from langchain_ai21.chat.chat_maestro import ChatMaestro
 from pydantic import BaseModel
 from typing_extensions import TypedDict
 
+
 os.environ["OPENAI_API_KEY"] = "openai_api_key"
 AI21_API_KEY = "ai21_api_key"
+AI21_API_HOST = 'https://api-stage.ai21.com/studio/v1'
 
 template = """Your job is to get information from a user about what type of prompt template they want to create.
 
@@ -45,7 +47,7 @@ class PromptInstructions(BaseModel):
 
 llm_prompt = ChatMaestro(
     api_key=AI21_API_KEY,
-    base_url='https://api-stage.ai21.com/studio/v1'
+    api_host=AI21_API_HOST
 )
 
 llm_info = ChatOpenAI(temperature=0)

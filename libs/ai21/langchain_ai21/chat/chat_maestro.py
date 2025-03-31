@@ -8,15 +8,16 @@ from ai21.models.chat import ToolFunction as AI21ToolFunction
 
 from langchain_core.runnables import Runnable
 from pydantic import BaseModel
-import httpx
 import asyncio
 
+from langchain_ai21.ai21_base import AI21Base
 
-class ChatMaestro(BaseChatModel):
+
+class ChatMaestro(BaseChatModel, AI21Base):
     """Chat model using Maestro LLM."""
 
     api_key: str
-    base_url: str
+    api_host: str
     tools: Optional[List[dict]] = None
     timeout: int = 60
 
@@ -25,34 +26,18 @@ class ChatMaestro(BaseChatModel):
         """Return the type of LLM."""
         return "chat-maestro"
 
-    def get_headers(self):
-        return {"Authorization": f"Bearer {self.api_key}"}
-
     async def _acall(self, messages: List[BaseMessage], **kwargs: Any) -> str | Any:
         """Asynchronous API call to Maestro."""
         """Calls the Maestro API with formatted messages."""
         # formatted_messages = [{"role": "user" if m.type == "human" else "assistant", "content": m.content} for m in messages]
         formatted_messages = [{"role": "user", "content": message.content} for message in messages]
         requirements = kwargs.get("requirements", [])
-        requirements = [{"name": requirement, "description": requirement} for requirement in  requirements]
+        requirements = [{"name": requirement, "description": requirement} for requirement in requirements]
 
-        payload = {"input": formatted_messages
-            # , "constraints": kwargs.get("constraints", None)
+        payload = {"input": formatted_messages  # , "constraints": kwargs.get("constraints", None)
             , "requirements": requirements}
 
-        async with httpx.AsyncClient(timeout=self.timeout) as client:
-            response = await client.post(f"{self.base_url}/maestro/runs", json=payload, headers=self.get_headers())
-            response.raise_for_status()
-
-        if response.status_code != 200:
-            raise Exception(f"API error: {response.text}")
-
-        result = response.json()
-        if result["status"] == "in_progress":
-            # Handle polling or async streaming logic here
-            await asyncio.sleep(1)  # Example delay
-            return await self._poll_run(result["id"])
-
+        result = self.client.beta.chat.maestro.runs.create_and_poll(payload=payload)
         return result["result"]
 
     async def _generate(self, messages: List[BaseMessage], stop: Optional[List[str]] = None, **kwargs: Any) -> ChatResult:
@@ -85,22 +70,6 @@ class ChatMaestro(BaseChatModel):
         ai21_tool_calls = [self.to_ai21_tool_call(lc_tool_call) for lc_tool_call in tool_calls]
         return ai21_tool_calls
 
-    async def _poll_run(self, run_id: str) -> str:
-        """Polls the API until the run is completed or fails"""
-        async with httpx.AsyncClient() as client:
-            while True:
-                response = await client.get(
-                    f"{self.base_url}/maestro/runs/{run_id}", headers=self.get_headers()
-                )
-                if response.status_code != 200:
-                    raise Exception(f"Polling error: {response.text}")
-
-                result = response.json()
-                if result["status"] in ["completed", "failed"]:
-                    return result["result"]
-
-                await asyncio.sleep(1)  # Polling interval
-
     @staticmethod
     def to_ai21_tool_call(tool) -> dict[str, Any]:
         """
@@ -109,17 +78,16 @@ class ChatMaestro(BaseChatModel):
         # Example: use a predefined ID, or generate one dynamically
         tool_call_id = "prompt-instructions-tool"  # Unique ID for this tool call
 
-
         # Convert the PromptInstructions into the appropriate ToolFunction
         function_arguments = list(tool.model_fields.keys())
 
         tool_function = AI21ToolFunction(name="prompt_instructions_function",  # This could be a specific name based on your context
-            arguments=json.dumps(function_arguments), )
+                                         arguments=json.dumps(function_arguments), )
 
         tool_call_dict = {"type": "web_search"}
 
-         # tool_call_dict = {"type": "function",
-         #    "function": {"name": tool_function.name, "arguments": json.loads(tool_function.arguments)  # Convert back to dict from JSON string
-         #    }}
+        # tool_call_dict = {"type": "function",
+        #    "function": {"name": tool_function.name, "arguments": json.loads(tool_function.arguments)  # Convert back to dict from JSON string
+        #    }}
 
         return tool_call_dict
