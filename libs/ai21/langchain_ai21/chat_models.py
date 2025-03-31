@@ -23,7 +23,7 @@ from langchain_core.language_models.chat_models import (
     LangSmithParams,
     generate_from_stream,
 )
-from langchain_core.messages import BaseMessage, AIMessage
+from langchain_core.messages import BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult
 from langchain_core.runnables import Runnable
 from langchain_core.tools import BaseTool
@@ -234,17 +234,3 @@ class ChatAI21(BaseChatModel, AI21Base):
     ) -> Runnable[LanguageModelInput, BaseMessage]:
         formatted_tools = [convert_to_openai_tool(tool) for tool in tools]
         return super().bind(tools=formatted_tools, **kwargs)
-
-    def invoke(self, messages: List[BaseMessage], stop: Optional[List[str]] = None, run_manager: Optional[CallbackManagerForLLMRun] = None, **kwargs: Any, ) -> ChatResult:
-        """
-        Invoke method to generate a response using MaestroLLM.
-        """
-        prompt = self._extract_prompt(messages)
-        response_text = asyncio.run(self.maestro_llm._acall(prompt, stop=stop, **kwargs))
-        message = AIMessage(content=response_text)
-        generation = ChatGeneration(message=message)
-        return ChatResult(generations=[generation])
-
-    def _extract_prompt(self, messages: List[BaseMessage]) -> str:
-        """Extracts and formats the prompt from messages."""
-        return "\n".join(message.content for message in messages if isinstance(message.content, str))
