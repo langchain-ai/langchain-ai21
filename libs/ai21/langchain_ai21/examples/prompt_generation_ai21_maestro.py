@@ -10,12 +10,12 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langchain_ai21.chat.chat_maestro import ChatMaestro
-from pydantic import BaseModel
+from pydantic import BaseModel, SecretStr
 from typing_extensions import TypedDict
 
 
 os.environ["OPENAI_API_KEY"] = "openai_api_key"
-AI21_API_KEY = "ai21_api_key"
+AI21_API_KEY = SecretStr("ai21_api_key")
 AI21_API_HOST = 'https://api-stage.ai21.com/studio/v1'
 
 template = """Your job is to get information from a user about what type of prompt template they want to create.
@@ -72,24 +72,20 @@ prompt_system = """Based on the following requirements, write a good prompt temp
 # Will only get messages AFTER the tool call
 def get_prompt_messages_maestro(messages: list):
     tool_call = None
-    tool_message = None
     other_msgs = []
     for m in messages:
         if isinstance(m, AIMessage) and m.tool_calls:
             tool_call = m.tool_calls[0]["args"]
-            tool_message = m.content
         elif isinstance(m, ToolMessage):
             continue
         elif tool_call is not None:
             other_msgs.append(m)
-    return other_msgs, tool_call, tool_message
+    return other_msgs, tool_call
 
 
 def prompt_gen_chain(state):
-    messages, tool_call, tool_message = get_prompt_messages_maestro(state["messages"])
-
-    # input = user message -> (Based on the following requirements, write a good prompt template:)
-    objective = f"Write a good prompt template for {tool_message}"
+    messages, tool_call = get_prompt_messages_maestro(state["messages"])
+    objective = f"Write a good prompt template for {tool_call.get('objective')}"
     maestro_input = f"generate a prompt that meets the following objective: {objective} "
     response = llm_prompt.invoke([SystemMessage(maestro_input)], **tool_call)
     return {"messages": [response]}
@@ -135,6 +131,7 @@ graph = workflow.compile(checkpointer=memory)
 cached_human_responses = ["hi!", "rag prompt", "1 rag, 2 none, 3 no, 4 no", "red", "q"]
 cached_response_index = 0
 config = {"configurable": {"thread_id": str(uuid.uuid4())}}
+
 while True:
     try:
         user = input("User (q/Q to quit): ")
@@ -143,7 +140,7 @@ while True:
         cached_response_index += 1
     print(f"User (q/Q to quit): {user}")
     if user in {"q", "Q"}:
-        print("AI: Byebye")
+        print("AI: Bye bye")
         break
     output = None
     for output in graph.stream(
