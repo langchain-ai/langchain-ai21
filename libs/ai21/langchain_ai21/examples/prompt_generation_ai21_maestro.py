@@ -72,8 +72,12 @@ def get_prompt_messages_maestro(messages: list):
 def prompt_gen_chain(state):
     messages, tool_call = get_prompt_messages_maestro(state["messages"])
     objective = tool_call.get("objective")
-    variables = tool_call.get("variables", "no")
-    maestro_input = f"generate a prompt that meets the following objective: {objective} and has the following variables: {variables}"
+    variables = tool_call.get("variables")
+    maestro_input = f"generate a prompt that meets the following objective: {objective}"
+
+    if variables:
+        maestro_input += f" with the following variables: {variables}"
+
     response = llm_prompt.invoke([SystemMessage(maestro_input)], **tool_call)
     return {"messages": [response]}
 
