@@ -10,12 +10,12 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 from langchain_ai21.chat.chat_maestro import ChatMaestro
-from pydantic import BaseModel, SecretStr
+from pydantic import BaseModel
 from typing_extensions import TypedDict
 
 
 os.environ["OPENAI_API_KEY"] = "openai_api_key"
-os.environ["AI21_API_KEY"] = SecretStr("ai21_api_key")
+os.environ["AI21_API_KEY"] = "ai21_api_key"
 os.environ["AI21_API_HOST"] = 'ai21_api_host'
 
 template = """Your job is to get information from a user about what type of email template they want to create.
