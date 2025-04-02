@@ -71,8 +71,8 @@ def get_prompt_messages_maestro(messages: list):
 
 def prompt_gen_chain(state):
     messages, tool_call = get_prompt_messages_maestro(state["messages"])
-    objective = tool_call.get("objective")
-    variables = tool_call.get("variables")
+    objective = tool_call.pop("objective")
+    variables = tool_call.pop("variables")
     maestro_input = f"generate a prompt that meets the following objective: {objective}"
 
     if variables:
@@ -106,8 +106,7 @@ def add_tool_message(state: State):
     return {
         "messages": [
             ToolMessage(
-                content="Email"
-                        " generated!",
+                content="Generating email template...",
                 tool_call_id=state["messages"][-1].tool_calls[0]["id"],
             )
         ]
@@ -120,7 +119,7 @@ workflow.add_edge("prompt", END)
 workflow.add_edge(START, "info")
 graph = workflow.compile(checkpointer=memory)
 
-cached_human_responses = ["hi!", "write a prompt", "1 email to reach out to sell maestro the next ai tool, 2 first_name, last_name, 3 no", "Sritala Hollinger", "q"]
+cached_human_responses = ["hi!", "write a prompt", "1 email to reach out to sell maestro the next ai tool, 2 recipient_first_name, recipient_last_name, 3 no", "Sritala Hollinger", "q"]
 cached_response_index = 0
 config = {"configurable": {"thread_id": str(uuid.uuid4())}}
 
