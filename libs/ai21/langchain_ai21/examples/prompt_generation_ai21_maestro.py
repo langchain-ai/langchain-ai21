@@ -15,16 +15,15 @@ from typing_extensions import TypedDict
 
 
 os.environ["OPENAI_API_KEY"] = "openai_api_key"
-AI21_API_KEY = SecretStr("ai21_api_key")
-AI21_API_HOST = 'https://api-stage.ai21.com/studio/v1'
+os.environ["AI21_API_KEY"] = SecretStr("ai21_api_key")
+os.environ["AI21_API_HOST"] = 'ai21_api_host'
 
-template = """Your job is to get information from a user about what type of prompt template they want to create.
+template = """Your job is to get information from a user about what type of email template they want to create.
 
 You should get the following information from them:
 
-- What the objective of the prompt is
-- What variables will be passed into the prompt template
-- Any constraints for what the output should NOT do
+- What the objective of the email is
+- What variables will be passed into the email
 - Any requirements that the output MUST adhere to
 
 If you are not able to discern this info, ask them to clarify! Do not attempt to wildly guess.
@@ -36,36 +35,23 @@ def get_messages_info(messages):
     return [SystemMessage(content=template)] + messages
 
 
-class PromptInstructions(BaseModel):
-    """Instructions on how to prompt the LLM."""
+class EmailInstructions(BaseModel):
+    """Instructions on how to generate the email template."""
 
     objective: str
     variables: List[str]
-    constraints: List[str]
     requirements: List[str]
 
 
-llm_prompt = ChatMaestro(
-    api_key=AI21_API_KEY,
-    api_host=AI21_API_HOST
-)
-
+llm_prompt = ChatMaestro()
 llm_info = ChatOpenAI(temperature=0)
-
-llm_with_tool = llm_info.bind_tools([PromptInstructions])
+llm_with_tool = llm_info.bind_tools([EmailInstructions])
 
 
 def info_chain(state):
     messages = get_messages_info(state["messages"])
     response = llm_with_tool.invoke(messages)
     return {"messages": [response]}
-
-
-
-# New system prompt
-prompt_system = """Based on the following requirements, write a good prompt template:
-
-{reqs}"""
 
 
 # Function to get the messages for the prompt
@@ -85,8 +71,9 @@ def get_prompt_messages_maestro(messages: list):
 
 def prompt_gen_chain(state):
     messages, tool_call = get_prompt_messages_maestro(state["messages"])
-    objective = f"Write a good prompt template for {tool_call.get('objective')}"
-    maestro_input = f"generate a prompt that meets the following objective: {objective} "
+    objective = tool_call.get("objective")
+    variables = tool_call.get("variables", "no")
+    maestro_input = f"generate a prompt that meets the following objective: {objective} and has the following variables: {variables}"
     response = llm_prompt.invoke([SystemMessage(maestro_input)], **tool_call)
     return {"messages": [response]}
 
@@ -115,7 +102,8 @@ def add_tool_message(state: State):
     return {
         "messages": [
             ToolMessage(
-                content="Prompt generated!",
+                content="Email"
+                        " generated!",
                 tool_call_id=state["messages"][-1].tool_calls[0]["id"],
             )
         ]
@@ -128,7 +116,7 @@ workflow.add_edge("prompt", END)
 workflow.add_edge(START, "info")
 graph = workflow.compile(checkpointer=memory)
 
-cached_human_responses = ["hi!", "rag prompt", "1 rag, 2 none, 3 no, 4 no", "red", "q"]
+cached_human_responses = ["hi!", "write a prompt", "1 email to reach out to sell maestro the next ai tool, 2 first_name, last_name, 3 no", "Sritala Hollinger", "q"]
 cached_response_index = 0
 config = {"configurable": {"thread_id": str(uuid.uuid4())}}
 
