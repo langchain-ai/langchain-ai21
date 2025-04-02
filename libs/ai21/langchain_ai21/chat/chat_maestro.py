@@ -19,10 +19,14 @@ class ChatMaestro(BaseChatModel, AI21Base):
     def _call(self, messages: List[BaseMessage], **kwargs: Any) -> RunResponse:
         """ API call to Maestro."""
         formatted_messages = [{"role": "user", "content": message.content} for message in messages]
-        requirements = kwargs.get("requirements", [])
-        requirements = [{"name": requirement, "description": requirement} for requirement in requirements]
-        result = self.client.beta.maestro.runs.create_and_poll(input=formatted_messages, requirements=requirements)
+        payload = {"input": formatted_messages}
 
+        requirements = kwargs.get("requirements", [])
+        if requirements:
+            requirements = [{"name": requirement, "description": requirement} for requirement in  requirements]
+            payload["requirements"] = requirements
+
+        result = self.client.beta.maestro.runs.create_and_poll(payload)
         return result
 
     def _generate(self, messages: List[BaseMessage], stop: Optional[List[str]] = None, **kwargs: Any) -> ChatResult:
