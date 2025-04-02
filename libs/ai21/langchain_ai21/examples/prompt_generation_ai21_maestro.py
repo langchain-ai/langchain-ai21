@@ -119,7 +119,10 @@ workflow.add_edge("prompt", END)
 workflow.add_edge(START, "info")
 graph = workflow.compile(checkpointer=memory)
 
-cached_human_responses = ["hi!", "write a prompt", "1 email to reach out to sell maestro the next ai tool, 2 recipient_first_name, recipient_last_name, 3 no", "Sritala Hollinger", "q"]
+cached_human_responses = ["hi!", "write a prompt",
+                          "1 email to reach out to sell maestro the next ai tool, 2 recipient_first_name, recipient_last_name, 3 the email should contain 5 rows",
+                          "Sritala Hollinger", "q"]
+
 cached_response_index = 0
 config = {"configurable": {"thread_id": str(uuid.uuid4())}}
 
