@@ -1,8 +1,5 @@
 from typing import Any, List, Optional, Dict, Literal, Type
-
-from ai21 import AsyncAI21Client
-from pydantic import model_validator
-from typing_extensions import TypedDict, Self
+from typing_extensions import TypedDict
 
 from ai21.models.maestro.run import RunResponse, ToolType, Budget
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -33,9 +30,6 @@ class ToolResources(TypedDict, total=False):
 class ChatMaestro(BaseChatModel, AI21Base):
     """Chat model using Maestro LLM."""
 
-    _async_client: AsyncAI21Client = None
-    """Asynchronous client for API calls."""
-
     output_type: Optional[dict[str, Any]] = None
     """Optional dictionary specifying the output type."""
 
@@ -60,21 +54,6 @@ class ChatMaestro(BaseChatModel, AI21Base):
 
     poll_timeout_sec: Optional[float] = 20,
     """Timeout in seconds for polling the run status."""
-
-    @model_validator(mode="after")
-    def init_async_client(self) -> Self:
-        api_key = self.api_key
-        api_host = self.api_host
-        timeout_sec = self.timeout_sec
-        if (self._async_client or None) is None:
-            self._async_client = AsyncAI21Client(
-                api_key=api_key.get_secret_value(),
-                api_host=api_host,
-                timeout_sec=None if timeout_sec is None else float(timeout_sec),
-                via="langchain",
-            )
-
-        return self
 
     @property
     def _llm_type(self) -> str:
