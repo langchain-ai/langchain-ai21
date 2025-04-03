@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Dict, Literal
+from typing import Any, List, Optional, Dict, Literal, Type
 from typing_extensions import TypedDict
 
 from ai21.models.maestro.run import RunResponse, ToolType, Budget
@@ -85,23 +85,29 @@ class ChatMaestro(BaseChatModel, AI21Base):
 
     @staticmethod
     def _prepare_payload(messages: List[BaseMessage], **kwargs: Any) -> dict:
-        """Prepare the payload for the API call."""
+        """Prepare the payload for the API call with validation."""
         formatted_messages = [{"role": "user", "content": message.content} for message in messages]
         payload = {"input": formatted_messages, **kwargs}
 
-        requirements = kwargs.pop("requirements", [])
+        requirements = payload.pop("requirements", [])
         if requirements:
-            requirements = [{"name": requirement, "description": requirement} for requirement in requirements]
-            payload["requirements"] = requirements
+            ChatMaestro.validate_list(requirements, "variables")
+            payload["requirements"] = [{"name": req, "description": req} for req in requirements]
 
-        variables = kwargs.pop("variables", [])
+        variables = payload.pop("variables", [])
         if variables:
+            ChatMaestro.validate_list(variables, "variables")
             variables_str = ' '.join(variables)
             payload["requirements"] = payload.get("requirements", []) + [
-                {"name": f"output should contain only these variables: {variables_str}", "description": variables_str}
-            ]
+                {"name": f"output should contain only these variables: {variables_str}", "description": variables_str}]
 
         return payload
+
+    @staticmethod
+    def validate_list(obj, obj_name: str, expected_type: Type = str):
+        """Validate that obj is a list of the expected type."""
+        if not isinstance(obj, list) or any(not isinstance(var, expected_type) for var in obj):
+            raise ValueError(f"{obj_name} must be a list of {expected_type.__name__}")
 
     @staticmethod
     def handle_chat_result(response_data):
