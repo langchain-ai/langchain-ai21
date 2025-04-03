@@ -52,6 +52,12 @@ class ChatMaestro(BaseChatModel, AI21Base):
             requirements = [{"name": requirement, "description": requirement} for requirement in  requirements]
             payload["requirements"] = requirements
 
+        variables = kwargs.pop("variables")
+        if variables:
+            # Also add variables to requirements, as with input.
+            variables = ' '.join(variables)
+            payload["requirements"] = payload.get("requirements", []) + [{"name": f"output should contain only these variables: {variables}", "description": variables}]
+
         result = self.client.beta.maestro.runs.create_and_poll(**payload, **kwargs)
         if result.status != "completed":
             raise RuntimeError(f"Maestro run failed with status: {result.status}")

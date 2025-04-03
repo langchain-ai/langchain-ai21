@@ -72,7 +72,7 @@ def get_prompt_messages_maestro(messages: list):
 def prompt_gen_chain(state):
     messages, tool_call = get_prompt_messages_maestro(state["messages"])
     objective = tool_call.pop("objective")
-    variables = tool_call.pop("variables")
+    variables = tool_call.get("variables")
     maestro_input = f"generate a prompt that meets the following objective: {objective}"
 
     if variables:
