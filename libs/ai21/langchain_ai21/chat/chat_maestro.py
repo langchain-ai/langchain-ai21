@@ -1,5 +1,8 @@
 from typing import Any, List, Optional, Dict, Literal, Type
-from typing_extensions import TypedDict
+
+from ai21 import AsyncAI21Client
+from pydantic import model_validator
+from typing_extensions import TypedDict, Self
 
 from ai21.models.maestro.run import RunResponse, ToolType, Budget
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -30,6 +33,9 @@ class ToolResources(TypedDict, total=False):
 class ChatMaestro(BaseChatModel, AI21Base):
     """Chat model using Maestro LLM."""
 
+    _async_client: AsyncAI21Client = None
+    """Asynchronous client for API calls."""
+
     output_type: Optional[dict[str, Any]] = None
     """Optional dictionary specifying the output type."""
 
@@ -55,6 +61,20 @@ class ChatMaestro(BaseChatModel, AI21Base):
     poll_timeout_sec: Optional[float] = 20,
     """Timeout in seconds for polling the run status."""
 
+    @model_validator(mode="after")
+    def init_async_client(self) -> Self:
+        api_key = self.api_key
+        api_host = self.api_host
+        timeout_sec = self.timeout_sec
+        if (self._async_client or None) is None:
+            self._async_client = AsyncAI21Client(
+                api_key=api_key.get_secret_value(),
+                api_host=api_host,
+                timeout_sec=None if timeout_sec is None else float(timeout_sec),
+                via="langchain",
+            )
+
+        return self
 
     @property
     def _llm_type(self) -> str:
@@ -73,7 +93,7 @@ class ChatMaestro(BaseChatModel, AI21Base):
     async def _acall(self, messages: List[BaseMessage], **kwargs: Any) -> RunResponse:
         """Asynchronous API call to Maestro."""
         payload = self._prepare_payload(messages, **kwargs)
-        result = await self.client.beta.maestro.runs.create_and_poll(**payload)
+        result = await self._async_client.beta.maestro.runs.create_and_poll(**payload)
         if result.status != "completed":
             raise RuntimeError(f"Maestro run failed with status: {result.status}")
 
@@ -82,12 +102,12 @@ class ChatMaestro(BaseChatModel, AI21Base):
     def _generate(self, messages: List[BaseMessage], **kwargs: Any) -> ChatResult:
         """Generates a response using Maestro LLM."""
         response_data = self._call(messages, **kwargs)
-        return self.handle_chat_result(response_data)
+        return self._handle_chat_result(response_data)
 
     async def _agenerate(self, messages: List[BaseMessage], **kwargs: Any) -> ChatResult:
         """Asynchronous agent call to Maestro."""
         response_data = await self._acall(messages, **kwargs)
-        return self.handle_chat_result(response_data)
+        return self._handle_chat_result(response_data)
 
     @staticmethod
     def _prepare_payload(messages: List[BaseMessage], **kwargs: Any) -> dict:
@@ -116,7 +136,7 @@ class ChatMaestro(BaseChatModel, AI21Base):
             raise ValueError(f"{obj_name} must be a list of {expected_type.__name__}")
 
     @staticmethod
-    def handle_chat_result(response_data):
+    def _handle_chat_result(response_data: RunResponse) -> ChatResult:
         """Handle the response data from the Maestro run."""
         ai_message = AIMessage(content=response_data.result)
         generation = ChatGeneration(message=ai_message)
