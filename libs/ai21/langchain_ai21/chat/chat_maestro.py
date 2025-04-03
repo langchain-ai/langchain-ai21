@@ -31,11 +31,24 @@ class ChatMaestro(BaseChatModel, AI21Base):
     """Chat model using Maestro LLM."""
 
     output_type: Optional[dict[str, Any]] = None
+    """Optional dictionary specifying the output type."""
+
     models: Optional[List[str]] = None
+    """Optional list of model names to use.
+        Available models https://github.com/AI21Labs/ai21-python?tab=readme-ov-file#model-types"""
+
     tools: Optional[List[Dict[str, ToolType]]] = None
+    """Optional list of tools."""
+
     tool_resources: Optional[ToolResources] = None
+    """Optional resources for the tools."""
+
     context: Optional[Dict[str, Any]] = None
+    """Optional dictionary providing context for the chat."""
+
     budget: Optional[Budget] = None
+    """Optional budget constraints for the chat."""
+
 
     @property
     def _llm_type(self) -> str:
