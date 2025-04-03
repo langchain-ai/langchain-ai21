@@ -44,21 +44,17 @@ class ChatMaestro(BaseChatModel, AI21Base):
 
     def _call(self, messages: List[BaseMessage], **kwargs: Any) -> RunResponse:
         """ API call to Maestro."""
-        formatted_messages = [{"role": "user", "content": message.content} for message in messages]
-        payload = {"input": formatted_messages}
+        payload = self._prepare_payload(messages, **kwargs)
+        result = self.client.beta.maestro.runs.create_and_poll(**payload)
+        if result.status != "completed":
+            raise RuntimeError(f"Maestro run failed with status: {result.status}")
 
-        requirements = kwargs.pop("requirements")
-        if requirements:
-            requirements = [{"name": requirement, "description": requirement} for requirement in  requirements]
-            payload["requirements"] = requirements
+        return result
 
-        variables = kwargs.pop("variables")
-        if variables:
-            # Also add variables to requirements, as with input.
-            variables = ' '.join(variables)
-            payload["requirements"] = payload.get("requirements", []) + [{"name": f"output should contain only these variables: {variables}", "description": variables}]
-
-        result = self.client.beta.maestro.runs.create_and_poll(**payload, **kwargs)
+    async def _acall(self, messages: List[BaseMessage], **kwargs: Any) -> RunResponse:
+        """Asynchronous API call to Maestro."""
+        payload = self._prepare_payload(messages, **kwargs)
+        result = await self.client.beta.maestro.runs.create_and_poll(**payload)
         if result.status != "completed":
             raise RuntimeError(f"Maestro run failed with status: {result.status}")
 
@@ -67,7 +63,36 @@ class ChatMaestro(BaseChatModel, AI21Base):
     def _generate(self, messages: List[BaseMessage], stop: Optional[List[str]] = None, **kwargs: Any) -> ChatResult:
         """Generates a response using Maestro LLM."""
         response_data = self._call(messages, **kwargs)
+        return self.handle_chat_result(response_data)
+
+    async def _agenerate(self, messages: List[BaseMessage], **kwargs: Any) -> ChatResult:
+        """Asynchronous agent call to Maestro."""
+        response_data = await self._acall(messages, **kwargs)
+        return self.handle_chat_result(response_data)
+
+    @staticmethod
+    def _prepare_payload(messages: List[BaseMessage], **kwargs: Any) -> dict:
+        """Prepare the payload for the API call."""
+        formatted_messages = [{"role": "user", "content": message.content} for message in messages]
+        payload = {"input": formatted_messages, **kwargs}
+
+        requirements = kwargs.pop("requirements", [])
+        if requirements:
+            requirements = [{"name": requirement, "description": requirement} for requirement in requirements]
+            payload["requirements"] = requirements
+
+        variables = kwargs.pop("variables", [])
+        if variables:
+            variables_str = ' '.join(variables)
+            payload["requirements"] = payload.get("requirements", []) + [
+                {"name": f"output should contain only these variables: {variables_str}", "description": variables_str}
+            ]
+
+        return payload
+
+    @staticmethod
+    def handle_chat_result(response_data):
+        """Handle the response data from the Maestro run."""
         ai_message = AIMessage(content=response_data.result)
         generation = ChatGeneration(message=ai_message)
-
         return ChatResult(generations=[generation])
