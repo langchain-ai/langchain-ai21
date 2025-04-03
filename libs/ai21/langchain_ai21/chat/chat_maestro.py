@@ -79,7 +79,7 @@ class ChatMaestro(BaseChatModel, AI21Base):
 
         return result
 
-    def _generate(self, messages: List[BaseMessage], stop: Optional[List[str]] = None, **kwargs: Any) -> ChatResult:
+    def _generate(self, messages: List[BaseMessage], **kwargs: Any) -> ChatResult:
         """Generates a response using Maestro LLM."""
         response_data = self._call(messages, **kwargs)
         return self.handle_chat_result(response_data)
@@ -97,7 +97,7 @@ class ChatMaestro(BaseChatModel, AI21Base):
 
         requirements = payload.pop("requirements", [])
         if requirements:
-            ChatMaestro.validate_list(requirements, "variables")
+            ChatMaestro.validate_list(requirements, "requirements")
             payload["requirements"] = [{"name": req, "description": req} for req in requirements]
 
         variables = payload.pop("variables", [])
