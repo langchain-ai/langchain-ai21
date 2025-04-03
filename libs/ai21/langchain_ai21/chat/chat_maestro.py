@@ -53,6 +53,9 @@ class ChatMaestro(BaseChatModel, AI21Base):
             payload["requirements"] = requirements
 
         result = self.client.beta.maestro.runs.create_and_poll(**payload, **kwargs)
+        if result.status != "completed":
+            raise RuntimeError(f"Maestro run failed with status: {result.status}")
+
         return result
 
     def _generate(self, messages: List[BaseMessage], stop: Optional[List[str]] = None, **kwargs: Any) -> ChatResult:
