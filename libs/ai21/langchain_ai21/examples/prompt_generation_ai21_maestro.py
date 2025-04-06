@@ -16,7 +16,8 @@ os.environ["OPENAI_API_KEY"] = "openai_api_key"
 os.environ["AI21_API_KEY"] = "ai21_api_key"
 os.environ["AI21_API_HOST"] = "ai21_api_host"
 
-template = """Your job is to get information from a user about what type of email template they want to create.
+template = """Your job is to get information from a user about what type of email
+ template they want to create.
 
 You should get the following information from them:
 
@@ -24,7 +25,8 @@ You should get the following information from them:
 - What variables will be passed into the email
 - Any requirements that the output MUST adhere to
 
-If you are not able to discern this info, ask them to clarify! Do not attempt to wildly guess.
+If you are not able to discern this info, ask them to clarify! Do not attempt to wildly
+ guess.
 
 After you are able to discern all the information, call the relevant tool."""
 
@@ -120,7 +122,8 @@ graph = workflow.compile(checkpointer=memory)
 cached_human_responses = [
     "hi!",
     "write a prompt",
-    "1 email to reach out to sell maestro the next ai tool, 2 recipient_first_name, recipient_last_name, 3 the email should contain 5 rows",
+    "1 email to reach out to sell maestro the next ai tool, 2 recipient_first_name,"
+    " recipient_last_name, 3 the email should contain 5 rows",
     "Sritala Hollinger",
     "q",
 ]

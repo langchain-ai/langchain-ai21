@@ -112,7 +112,8 @@ class ChatMaestro(BaseChatModel, AI21Base):
             variables_str = " ".join(variables)
             payload["requirements"] = payload.get("requirements", []) + [
                 {
-                    "name": f"output should contain only these variables: {variables_str}",
+                    "name": "output should contain only these variables:"
+                    f" {variables_str}",
                     "description": variables_str,
                 }
             ]
