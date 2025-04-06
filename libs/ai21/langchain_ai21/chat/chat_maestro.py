@@ -50,10 +50,10 @@ class ChatMaestro(BaseChatModel, AI21Base):
     budget: Optional[Budget] = None
     """Optional budget constraints for the chat."""
 
-    poll_interval_sec: Optional[float] = (1,)
+    poll_interval_sec: Optional[float] = 1
     """Interval in seconds for polling the run status."""
 
-    poll_timeout_sec: Optional[float] = (20,)
+    poll_timeout_sec: Optional[float] = 120
     """Timeout in seconds for polling the run status."""
 
     @property
