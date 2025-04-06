@@ -77,7 +77,7 @@ class ChatMaestro(BaseChatModel, AI21Base):
     async def _acall(self, messages: List[BaseMessage], **kwargs: Any) -> RunResponse:
         """Asynchronous API call to Maestro."""
         payload = self._prepare_payload(messages, **kwargs)
-        result = await self._async_client.beta.maestro.runs.create_and_poll(**payload)
+        result = await self.async_client.beta.maestro.runs.create_and_poll(**payload)
         if result.status != "completed":
             raise RuntimeError(f"Maestro run failed with status: {result.status}")
 

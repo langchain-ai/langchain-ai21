@@ -23,7 +23,7 @@ class AI21Base(BaseModel):
 
     client: Any = Field(default=None, exclude=True)  #: :meta private:
 
-    _async_client: Any = Field(default=None, exclude=True)
+    async_client: Any = Field(default=None, exclude=True)
     """Asynchronous client for API calls."""
 
     api_key: SecretStr = Field(
@@ -67,8 +67,8 @@ class AI21Base(BaseModel):
         api_key = self.api_key
         api_host = self.api_host
         timeout_sec = self.timeout_sec
-        if (self._async_client or None) is None:
-            self._async_client = AsyncAI21Client(
+        if (self.async_client or None) is None:
+            self.async_client = AsyncAI21Client(
                 api_key=api_key.get_secret_value(),
                 api_host=api_host,
                 timeout_sec=None if timeout_sec is None else float(timeout_sec),
