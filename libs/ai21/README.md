@@ -125,3 +125,21 @@ for human_message in human_messages:
         print(f"Assistant: {response.content}")
 
 ```
+
+
+# Chat Maestro Integration
+
+## Using Chat Maestro
+
+```python
+from langchain_core.messages import HumanMessage
+from langchain_ai21.chat.chat_maestro import ChatMaestro
+
+chat = ChatMaestro()
+messages = [HumanMessage(content="Hello from Maestro")]
+result = chat.invoke(messages)
+```
+
+## Prompt Generation Example with AI21 Maestro and LangChain
+
+To see an example of a chat app that helps users draft an email using ChatMaestro, check out [this file](./langchain_ai21/examples/prompt_generation_ai21_maestro.py).

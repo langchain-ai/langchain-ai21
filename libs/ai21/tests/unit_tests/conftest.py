@@ -53,6 +53,11 @@ def mock_client_with_chat(mocker: MockerFixture) -> Mock:
     return mock_client
 
 
+@pytest.fixture(autouse=True)
+def patch_async_client(mocker: MockerFixture) -> None:
+    mocker.patch("langchain_ai21.ai21_base.AsyncAI21Client")
+
+
 @contextmanager
 def temporarily_unset_api_key() -> Generator:
     """

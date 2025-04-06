@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "langchain-ai21"
-version = "1.0.1"
+version = "1.0.2"
 description = "An integration package connecting AI21 and LangChain"
 authors = []
 readme = "README.md"
@@ -75,3 +75,7 @@ ruff = "^0.5"
 
 [tool.poetry.group.typing.dependencies]
 mypy = "^1.10"
+
+[tool.poetry.group.maestro.dependencies]
+langgraph = "^0.3.20"
+langchain-openai = "^0.3.11"
