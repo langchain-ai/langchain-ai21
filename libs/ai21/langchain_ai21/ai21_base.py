@@ -23,7 +23,7 @@ class AI21Base(BaseModel):
 
     client: Any = Field(default=None, exclude=True)  #: :meta private:
 
-    _async_client: Optional[AsyncAI21Client] = None
+    _async_client: Any = Field(default=None, exclude=True)
     """Asynchronous client for API calls."""
 
     api_key: SecretStr = Field(
