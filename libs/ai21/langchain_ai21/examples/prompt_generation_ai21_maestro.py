@@ -1,8 +1,15 @@
 import os
 import uuid
-from typing import Annotated, List
+from typing import Annotated, Any, List
 
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
+from langchain_core.messages import (
+    AIMessage,
+    BaseMessage,
+    HumanMessage,
+    SystemMessage,
+    ToolMessage,
+)
+from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
@@ -31,7 +38,7 @@ If you are not able to discern this info, ask them to clarify! Do not attempt to
 After you are able to discern all the information, call the relevant tool."""
 
 
-def get_messages_info(messages):
+def get_messages_info(messages: list[SystemMessage]) -> List[SystemMessage]:
     return [SystemMessage(content=template)] + messages
 
 
@@ -48,7 +55,7 @@ llm_info = ChatOpenAI(temperature=0)
 llm_with_tool = llm_info.bind_tools([EmailInstructions])
 
 
-def info_chain(state):
+def info_chain(state: dict) -> dict:
     messages = get_messages_info(state["messages"])
     response = llm_with_tool.invoke(messages)
     return {"messages": [response]}
@@ -56,8 +63,10 @@ def info_chain(state):
 
 # Function to get the messages for the prompt
 # Will only get messages AFTER the tool call
-def get_prompt_messages_maestro(messages: list):
-    tool_call = None
+def get_prompt_messages_maestro(
+    messages: list[BaseMessage],
+) -> tuple[list[BaseMessage], dict[str, Any]]:
+    tool_call = {}
     other_msgs = []
     for m in messages:
         if isinstance(m, AIMessage) and m.tool_calls:
@@ -69,7 +78,7 @@ def get_prompt_messages_maestro(messages: list):
     return other_msgs, tool_call
 
 
-def prompt_gen_chain(state):
+def prompt_gen_chain(state: dict) -> dict:
     messages, tool_call = get_prompt_messages_maestro(state["messages"])
     objective = tool_call.pop("objective")
     variables = tool_call.get("variables")
@@ -82,7 +91,7 @@ def prompt_gen_chain(state):
     return {"messages": [response]}
 
 
-def get_state(state):
+def get_state(state: dict) -> str:
     messages = state["messages"]
     if isinstance(messages[-1], AIMessage) and messages[-1].tool_calls:
         return "add_tool_message"
@@ -102,7 +111,7 @@ workflow.add_node("prompt", prompt_gen_chain)
 
 
 @workflow.add_node
-def add_tool_message(state: State):
+def add_tool_message(state: State) -> dict:
     return {
         "messages": [
             ToolMessage(
@@ -129,7 +138,11 @@ cached_human_responses = [
 ]
 
 cached_response_index = 0
-config = {"configurable": {"thread_id": str(uuid.uuid4())}}
+config: RunnableConfig = {
+    "configurable": {
+        "thread_id": str(uuid.uuid4()),
+    }
+}
 
 while True:
     try:
