@@ -2,19 +2,19 @@
 
 [[package]]
 name = "ai21"
-version = "3.0.0"
+version = "3.1.0"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.8"
 groups = ["main"]
 files = [
-    {file = "ai21-3.0.0-py3-none-any.whl", hash = "sha256:b075a7ad5adc27da1ed929c258476ea009905649a41cf66bc718aea3791aaaa3"},
-    {file = "ai21-3.0.0.tar.gz", hash = "sha256:c0587c5d39e36c792eff852707f9654fcfb29a0839edf1998392fddf595baa02"},
+    {file = "ai21-3.1.0-py3-none-any.whl", hash = "sha256:cbc71a2d5777040d83f885237ae0fea31b84238e624a498be040a1f7592440c8"},
+    {file = "ai21-3.1.0.tar.gz", hash = "sha256:70499367846dfa66644448ab4901e1e2c27442aed2b9897b71828cdc22a76743"},
 ]
 
 [package.dependencies]
 ai21-tokenizer = ">=0.12.0,<1.0.0"
-httpx = ">=0.27.0,<0.28.0"
+httpx = ">=0.27.0,<1.0.0"
 pydantic = ">=1.9.0,<3.0.0"
 tenacity = ">=8.3.0,<9.0.0"
 typing-extensions = ">=4.9.0,<5.0.0"
