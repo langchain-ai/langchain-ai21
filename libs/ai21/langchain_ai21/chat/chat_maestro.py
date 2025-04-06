@@ -1,10 +1,11 @@
-from typing import Any, List, Optional, Dict, Literal, Type
-from typing_extensions import TypedDict
+from typing import Any, Dict, List, Literal, Optional, Type
 
-from ai21.models.maestro.run import RunResponse, ToolType, Budget
+from ai21.models.maestro.run import Budget, RunResponse, ToolType
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage, BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatResult
+from typing_extensions import TypedDict
+
 from langchain_ai21.ai21_base import AI21Base
 
 
@@ -49,10 +50,10 @@ class ChatMaestro(BaseChatModel, AI21Base):
     budget: Optional[Budget] = None
     """Optional budget constraints for the chat."""
 
-    poll_interval_sec: Optional[float] = 1,
+    poll_interval_sec: Optional[float] = (1,)
     """Interval in seconds for polling the run status."""
 
-    poll_timeout_sec: Optional[float] = 20,
+    poll_timeout_sec: Optional[float] = (20,)
     """Timeout in seconds for polling the run status."""
 
     @property
@@ -61,7 +62,7 @@ class ChatMaestro(BaseChatModel, AI21Base):
         return "chat-maestro"
 
     def _call(self, messages: List[BaseMessage], **kwargs: Any) -> RunResponse:
-        """ API call to Maestro."""
+        """API call to Maestro."""
         payload = self._prepare_payload(messages, **kwargs)
         result = self.client.beta.maestro.runs.create_and_poll(**payload)
         if result.status != "completed":
@@ -83,7 +84,9 @@ class ChatMaestro(BaseChatModel, AI21Base):
         response_data = self._call(messages, **kwargs)
         return self._handle_chat_result(response_data)
 
-    async def _agenerate(self, messages: List[BaseMessage], **kwargs: Any) -> ChatResult:
+    async def _agenerate(
+        self, messages: List[BaseMessage], **kwargs: Any
+    ) -> ChatResult:
         """Asynchronous agent call to Maestro."""
         response_data = await self._acall(messages, **kwargs)
         return self._handle_chat_result(response_data)
@@ -91,27 +94,37 @@ class ChatMaestro(BaseChatModel, AI21Base):
     @staticmethod
     def _prepare_payload(messages: List[BaseMessage], **kwargs: Any) -> dict:
         """Prepare the payload for the API call with validation."""
-        formatted_messages = [{"role": "user", "content": message.content} for message in messages]
+        formatted_messages = [
+            {"role": "user", "content": message.content} for message in messages
+        ]
         payload = {"input": formatted_messages, **kwargs}
 
         requirements = payload.pop("requirements", [])
         if requirements:
             ChatMaestro.validate_list(requirements, "requirements")
-            payload["requirements"] = [{"name": req, "description": req} for req in requirements]
+            payload["requirements"] = [
+                {"name": req, "description": req} for req in requirements
+            ]
 
         variables = payload.pop("variables", [])
         if variables:
             ChatMaestro.validate_list(variables, "variables")
-            variables_str = ' '.join(variables)
+            variables_str = " ".join(variables)
             payload["requirements"] = payload.get("requirements", []) + [
-                {"name": f"output should contain only these variables: {variables_str}", "description": variables_str}]
+                {
+                    "name": f"output should contain only these variables: {variables_str}",
+                    "description": variables_str,
+                }
+            ]
 
         return payload
 
     @staticmethod
     def validate_list(obj, obj_name: str, expected_type: Type = str):
         """Validate that obj is a list of the expected type."""
-        if not isinstance(obj, list) or any(not isinstance(var, expected_type) for var in obj):
+        if not isinstance(obj, list) or any(
+            not isinstance(var, expected_type) for var in obj
+        ):
             raise ValueError(f"{obj_name} must be a list of {expected_type.__name__}")
 
     @staticmethod

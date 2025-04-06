@@ -2,21 +2,19 @@ import os
 import uuid
 from typing import Annotated, List
 
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_openai import ChatOpenAI
-
-from langchain_core.messages import (AIMessage, HumanMessage, SystemMessage,
-                                     ToolMessage)
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
-from langchain_ai21.chat.chat_maestro import ChatMaestro
 from pydantic import BaseModel
 from typing_extensions import TypedDict
 
+from langchain_ai21.chat.chat_maestro import ChatMaestro
 
 os.environ["OPENAI_API_KEY"] = "openai_api_key"
 os.environ["AI21_API_KEY"] = "ai21_api_key"
-os.environ["AI21_API_HOST"] = 'ai21_api_host'
+os.environ["AI21_API_HOST"] = "ai21_api_host"
 
 template = """Your job is to get information from a user about what type of email template they want to create.
 
@@ -119,9 +117,13 @@ workflow.add_edge("prompt", END)
 workflow.add_edge(START, "info")
 graph = workflow.compile(checkpointer=memory)
 
-cached_human_responses = ["hi!", "write a prompt",
-                          "1 email to reach out to sell maestro the next ai tool, 2 recipient_first_name, recipient_last_name, 3 the email should contain 5 rows",
-                          "Sritala Hollinger", "q"]
+cached_human_responses = [
+    "hi!",
+    "write a prompt",
+    "1 email to reach out to sell maestro the next ai tool, 2 recipient_first_name, recipient_last_name, 3 the email should contain 5 rows",
+    "Sritala Hollinger",
+    "q",
+]
 
 cached_response_index = 0
 config = {"configurable": {"thread_id": str(uuid.uuid4())}}
@@ -129,7 +131,7 @@ config = {"configurable": {"thread_id": str(uuid.uuid4())}}
 while True:
     try:
         user = input("User (q/Q to quit): ")
-    except:
+    except EOFError:
         user = cached_human_responses[cached_response_index]
         cached_response_index += 1
     print(f"User (q/Q to quit): {user}")
