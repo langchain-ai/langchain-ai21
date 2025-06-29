@@ -4,11 +4,10 @@ import time
 from typing import Optional, Type
 
 import pytest
+from langchain_ai21 import ChatAI21
 from langchain_core.language_models import BaseChatModel
 from langchain_core.rate_limiters import InMemoryRateLimiter
 from langchain_standard_tests.integration_tests import ChatModelIntegrationTests
-
-from langchain_ai21 import ChatAI21
 
 rate_limiter = InMemoryRateLimiter(requests_per_second=0.5)
 
@@ -27,17 +26,7 @@ class BaseTestAI21(ChatModelIntegrationTests):
         super().test_usage_metadata(model)
 
 
-class TestAI21Jamba(BaseTestAI21):
-    has_tool_calling = False
-
-    @property
-    def chat_model_params(self) -> dict:
-        return {
-            "model": "jamba-instruct-preview",
-        }
-
-
-class TestAI21Jamba1_5(BaseTestAI21):
+class TestAI21JambaMini(BaseTestAI21):
     @property
     def tool_choice_value(self) -> Optional[str]:
         """Value to use for tool choice when used in tests."""
@@ -46,7 +35,7 @@ class TestAI21Jamba1_5(BaseTestAI21):
     @property
     def chat_model_params(self) -> dict:
         return {
-            "model": "jamba-1.5-mini",
+            "model": "jamba-mini",
             "temperature": 0.0,
         }
 
