@@ -1,6 +1,7 @@
 from typing import Type
 
 import pytest
+
 from langchain_ai21.chat.chat_adapter import ChatAdapter, JambaChatCompletionsAdapter
 from langchain_ai21.chat.chat_factory import create_chat_adapter
 from tests.unit_tests.conftest import JAMBA_MINI_CHAT_MODEL_NAME

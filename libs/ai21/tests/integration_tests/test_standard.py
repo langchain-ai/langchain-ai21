@@ -4,10 +4,11 @@ import time
 from typing import Optional, Type
 
 import pytest
-from langchain_ai21 import ChatAI21
 from langchain_core.language_models import BaseChatModel
 from langchain_core.rate_limiters import InMemoryRateLimiter
 from langchain_standard_tests.integration_tests import ChatModelIntegrationTests
+
+from langchain_ai21 import ChatAI21
 
 rate_limiter = InMemoryRateLimiter(requests_per_second=0.5)
 
