@@ -2,13 +2,7 @@ from typing import Any, Optional
 
 from ai21 import AI21Client, AsyncAI21Client
 from langchain_core.utils import from_env, secret_from_env
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    Field,
-    SecretStr,
-    model_validator,
-)
+from pydantic import BaseModel, ConfigDict, Field, SecretStr, model_validator
 from typing_extensions import Self
 
 _DEFAULT_TIMEOUT_SEC = 300
@@ -31,7 +25,9 @@ class AI21Base(BaseModel):
     )
     """API key for AI21 API."""
     api_host: str = Field(
-        default_factory=from_env("AI21_API_URL", default="https://api.ai21.com")
+        default_factory=from_env(
+            "AI21_API_URL", default="https://api.ai21.com/studio/v1"
+        )
     )
     """Host URL"""
     timeout_sec: float = Field(

@@ -13,9 +13,8 @@ from ai21.models.chat import (
 from ai21.models.usage_info import UsageInfo
 from pytest_mock import MockerFixture
 
-JAMBA_CHAT_MODEL_NAME = "jamba-instruct-preview"
-JAMBA_1_5_MINI_CHAT_MODEL_NAME = "jamba-1.5-mini"
-JAMBA_1_5_LARGE_CHAT_MODEL_NAME = "jamba-1.5-large"
+JAMBA_MINI_CHAT_MODEL_NAME = "jamba-mini"
+JAMBA_LARGE_CHAT_MODEL_NAME = "jamba-large"
 DUMMY_API_KEY = "test_api_key"
 
 

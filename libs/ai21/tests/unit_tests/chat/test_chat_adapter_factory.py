@@ -2,12 +2,9 @@ from typing import Type
 
 import pytest
 
-from langchain_ai21.chat.chat_adapter import (
-    ChatAdapter,
-    JambaChatCompletionsAdapter,
-)
+from langchain_ai21.chat.chat_adapter import ChatAdapter, JambaChatCompletionsAdapter
 from langchain_ai21.chat.chat_factory import create_chat_adapter
-from tests.unit_tests.conftest import JAMBA_CHAT_MODEL_NAME
+from tests.unit_tests.conftest import JAMBA_MINI_CHAT_MODEL_NAME
 
 
 @pytest.mark.parametrize(
@@ -16,7 +13,7 @@ from tests.unit_tests.conftest import JAMBA_CHAT_MODEL_NAME
     ],
     argnames=["model", "expected_chat_type"],
     argvalues=[
-        (JAMBA_CHAT_MODEL_NAME, JambaChatCompletionsAdapter),
+        (JAMBA_MINI_CHAT_MODEL_NAME, JambaChatCompletionsAdapter),
     ],
 )
 def test_create_chat_adapter_with_supported_models(

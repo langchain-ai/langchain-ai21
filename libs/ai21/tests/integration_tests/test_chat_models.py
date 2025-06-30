@@ -14,9 +14,8 @@ from langchain_core.utils.function_calling import convert_to_openai_tool
 
 from langchain_ai21.chat_models import ChatAI21
 from tests.unit_tests.conftest import (
-    JAMBA_1_5_LARGE_CHAT_MODEL_NAME,
-    JAMBA_1_5_MINI_CHAT_MODEL_NAME,
-    JAMBA_CHAT_MODEL_NAME,
+    JAMBA_LARGE_CHAT_MODEL_NAME,
+    JAMBA_MINI_CHAT_MODEL_NAME,
 )
 
 rate_limiter = InMemoryRateLimiter(requests_per_second=0.5)
@@ -24,15 +23,13 @@ rate_limiter = InMemoryRateLimiter(requests_per_second=0.5)
 
 @pytest.mark.parametrize(
     ids=[
-        "when_jamba_model",
-        "when_jamba1.5-mini_model",
-        "when_jamba1.5-large_model",
+        "when_jamba-mini_model",
+        "when_jamba-large_model",
     ],
     argnames=["model"],
     argvalues=[
-        (JAMBA_CHAT_MODEL_NAME,),
-        (JAMBA_1_5_MINI_CHAT_MODEL_NAME,),
-        (JAMBA_1_5_LARGE_CHAT_MODEL_NAME,),
+        (JAMBA_MINI_CHAT_MODEL_NAME,),
+        (JAMBA_LARGE_CHAT_MODEL_NAME,),
     ],
 )
 def test_invoke(model: str) -> None:
@@ -45,21 +42,17 @@ def test_invoke(model: str) -> None:
 
 @pytest.mark.parametrize(
     ids=[
-        "when_jamba_model_n_is_1",
-        "when_jamba_model_n_is_3",
-        "when_jamba1.5_mini_model_n_is_1",
-        "when_jamba1.5_mini_model_n_is_3",
-        "when_jamba1.5_large_model_n_is_1",
-        "when_jamba1.5_large_model_n_is_3",
+        "when_jamba-mini_model_n_is_1",
+        "when_jamba-mini_model_n_is_3",
+        "when_jamba-large_model_n_is_1",
+        "when_jamba-large_model_n_is_3",
     ],
     argnames=["model", "n"],
     argvalues=[
-        (JAMBA_CHAT_MODEL_NAME, 1),
-        (JAMBA_CHAT_MODEL_NAME, 3),
-        (JAMBA_1_5_MINI_CHAT_MODEL_NAME, 1),
-        (JAMBA_1_5_MINI_CHAT_MODEL_NAME, 3),
-        (JAMBA_1_5_LARGE_CHAT_MODEL_NAME, 1),
-        (JAMBA_1_5_LARGE_CHAT_MODEL_NAME, 3),
+        (JAMBA_MINI_CHAT_MODEL_NAME, 1),
+        (JAMBA_MINI_CHAT_MODEL_NAME, 3),
+        (JAMBA_LARGE_CHAT_MODEL_NAME, 1),
+        (JAMBA_LARGE_CHAT_MODEL_NAME, 3),
     ],
 )
 def test_generation(model: str, n: int) -> None:
@@ -82,15 +75,13 @@ def test_generation(model: str, n: int) -> None:
 
 @pytest.mark.parametrize(
     ids=[
-        "when_jamba_model",
-        "when_jamba1.5_mini_model",
-        "when_jamba1.5_large_model",
+        "when_jamba-mini_model",
+        "when_jamba-large_model",
     ],
     argnames=["model"],
     argvalues=[
-        (JAMBA_CHAT_MODEL_NAME,),
-        (JAMBA_1_5_MINI_CHAT_MODEL_NAME,),
-        (JAMBA_1_5_LARGE_CHAT_MODEL_NAME,),
+        (JAMBA_MINI_CHAT_MODEL_NAME,),
+        (JAMBA_LARGE_CHAT_MODEL_NAME,),
     ],
 )
 async def test_ageneration(model: str) -> None:
@@ -109,7 +100,7 @@ async def test_ageneration(model: str) -> None:
 
 
 def test__chat_stream() -> None:
-    llm = ChatAI21(model="jamba-1.5-mini")  # type: ignore[call-arg]
+    llm = ChatAI21(model=JAMBA_MINI_CHAT_MODEL_NAME)  # type: ignore[call-arg]
     message = HumanMessage(content="What is the meaning of life?")
 
     for chunk in llm.stream([message]):
@@ -119,13 +110,13 @@ def test__chat_stream() -> None:
 
 @pytest.mark.parametrize(
     ids=[
-        "when_jamba1.5_mini_model",
-        "when_jamba1.5_large_model",
+        "when_jamba-mini_model",
+        "when_jamba-large_model",
     ],
     argnames=["model"],
     argvalues=[
-        (JAMBA_1_5_MINI_CHAT_MODEL_NAME,),
-        (JAMBA_1_5_LARGE_CHAT_MODEL_NAME,),
+        (JAMBA_MINI_CHAT_MODEL_NAME,),
+        (JAMBA_LARGE_CHAT_MODEL_NAME,),
     ],
 )
 def test_tool_calls(model: str) -> None:

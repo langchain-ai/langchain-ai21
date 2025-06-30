@@ -27,17 +27,7 @@ class BaseTestAI21(ChatModelIntegrationTests):
         super().test_usage_metadata(model)
 
 
-class TestAI21Jamba(BaseTestAI21):
-    has_tool_calling = False
-
-    @property
-    def chat_model_params(self) -> dict:
-        return {
-            "model": "jamba-instruct-preview",
-        }
-
-
-class TestAI21Jamba1_5(BaseTestAI21):
+class TestAI21JambaMini(BaseTestAI21):
     @property
     def tool_choice_value(self) -> Optional[str]:
         """Value to use for tool choice when used in tests."""
@@ -46,7 +36,7 @@ class TestAI21Jamba1_5(BaseTestAI21):
     @property
     def chat_model_params(self) -> dict:
         return {
-            "model": "jamba-1.5-mini",
+            "model": "jamba-mini",
             "temperature": 0.0,
         }
 
