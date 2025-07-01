@@ -1,14 +1,8 @@
 from typing import List
 
 import pytest
-from ai21.models.chat import (
-    AssistantMessage,
-    ChatMessage,
-    UserMessage,
-)
-from ai21.models.chat import (
-    SystemMessage as AI21SystemMessage,
-)
+from ai21.models.chat import AssistantMessage, ChatMessage, UserMessage
+from ai21.models.chat import SystemMessage as AI21SystemMessage
 from ai21.models.chat import ToolMessage as AI21ToolMessage
 from langchain_core.messages import (
     AIMessage,
@@ -21,8 +15,8 @@ from langchain_core.messages import (
 from langchain_ai21.chat.chat_adapter import ChatAdapter
 
 _JAMBA_MODEL_NAME = "jamba-instruct-preview"
-_JAMBA_1_5_MINI_MODEL_NAME = "jamba-1.5-mini"
-_JAMBA_1_5_LARGE_MODEL_NAME = "jamba-1.5-large"
+_JAMBA_MINI_MODEL_NAME = "jamba-mini"
+_JAMBA_LARGE_MODEL_NAME = "jamba-large"
 
 
 @pytest.mark.parametrize(
@@ -99,7 +93,7 @@ def test_convert_message_to_ai21_message(
             },
         ),
         (
-            _JAMBA_1_5_MINI_MODEL_NAME,
+            _JAMBA_MINI_MODEL_NAME,
             [
                 ToolMessage(
                     content="42",
@@ -117,7 +111,7 @@ def test_convert_message_to_ai21_message(
             },
         ),
         (
-            _JAMBA_1_5_LARGE_MODEL_NAME,
+            _JAMBA_LARGE_MODEL_NAME,
             [
                 ToolMessage(
                     content="42",
