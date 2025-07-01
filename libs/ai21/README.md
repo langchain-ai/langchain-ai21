@@ -13,7 +13,7 @@ pip install langchain-ai21
 
 ## Chat Models
 
-This package contains the `ChatAI21` class, which is the recommended way to interface with AI21 chat models, including Jamba-Instruct
+This package contains the `ChatAI21` class, which is the recommended way to interface with AI21 chat models, including Jamba-Mini
 and any Jurassic chat models.
 
 To use, install the requirements and configure your environment.
@@ -28,7 +28,7 @@ Then initialize
 from langchain_core.messages import HumanMessage
 from langchain_ai21.chat_models import ChatAI21
 
-chat = ChatAI21(model="jamba-instruct")
+chat = ChatAI21(model="jamba-mini")
 messages = [HumanMessage(content="Hello from AI21")]
 chat.invoke(messages)
 ```
@@ -42,7 +42,7 @@ Streaming is supported by the latest models. To use streaming, set the `streamin
 from langchain_core.messages import HumanMessage
 from langchain_ai21.chat_models import ChatAI21
 
-chat = ChatAI21(model="jamba-instruct", streaming=True)
+chat = ChatAI21(model="jamba-mini", streaming=True)
 messages = [HumanMessage(content="Hello from AI21")]
 
 response = chat.invoke(messages)
@@ -54,7 +54,7 @@ or use the `stream` method directly
 from langchain_core.messages import HumanMessage
 from langchain_ai21.chat_models import ChatAI21
 
-chat = ChatAI21(model="jamba-instruct")
+chat = ChatAI21(model="jamba-mini")
 messages = [HumanMessage(content="Hello from AI21")]
 
 for chunk in chat.stream(messages):
@@ -94,7 +94,7 @@ def get_weather(location: str, date: str) -> str:
         return "22 celsius"
     return "32 celsius"
 
-llm = ChatAI21(model="jamba-1.5-mini")
+llm = ChatAI21(model="jamba-mini")
 
 llm_with_tools = llm.bind_tools([convert_to_openai_tool(get_weather)])
 
