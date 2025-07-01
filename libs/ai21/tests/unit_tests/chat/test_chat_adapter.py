@@ -1,11 +1,9 @@
 from typing import List
 
 import pytest
-from ai21.models.chat import AssistantMessage, ChatMessage
+from ai21.models.chat import AssistantMessage, ChatMessage, UserMessage
 from ai21.models.chat import SystemMessage as AI21SystemMessage
 from ai21.models.chat import ToolMessage as AI21ToolMessage
-from ai21.models.chat import UserMessage
-from langchain_ai21.chat.chat_adapter import ChatAdapter
 from langchain_core.messages import (
     AIMessage,
     BaseMessage,
@@ -13,6 +11,8 @@ from langchain_core.messages import (
     SystemMessage,
     ToolMessage,
 )
+
+from langchain_ai21.chat.chat_adapter import ChatAdapter
 
 _JAMBA_MODEL_NAME = "jamba-instruct-preview"
 _JAMBA_MINI_MODEL_NAME = "jamba-mini"
