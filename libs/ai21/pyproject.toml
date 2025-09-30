@@ -20,7 +20,7 @@ disallow_untyped_defs = "True"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
-langchain-core = "^0.3"
+langchain-core = ">=0.3,<2.0.0"
 ai21 = "^3.3.0"
 
 [tool.ruff.lint]
