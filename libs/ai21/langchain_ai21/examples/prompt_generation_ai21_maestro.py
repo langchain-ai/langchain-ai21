@@ -50,12 +50,16 @@ class EmailInstructions(BaseModel):
     requirements: List[str]
 
 
+class State(TypedDict):
+    messages: Annotated[list, add_messages]
+
+
 llm_prompt = ChatMaestro()
 llm_info = ChatOpenAI(temperature=0)
 llm_with_tool = llm_info.bind_tools([EmailInstructions])
 
 
-def info_chain(state: dict) -> dict:
+def info_chain(state: State) -> dict:
     messages = get_messages_info(state["messages"])
     response = llm_with_tool.invoke(messages)
     return {"messages": [response]}
@@ -78,7 +82,7 @@ def get_prompt_messages_maestro(
     return other_msgs, tool_call
 
 
-def prompt_gen_chain(state: dict) -> dict:
+def prompt_gen_chain(state: State) -> dict:
     messages, tool_call = get_prompt_messages_maestro(state["messages"])
     objective = tool_call.pop("objective")
     variables = tool_call.get("variables")
@@ -91,17 +95,13 @@ def prompt_gen_chain(state: dict) -> dict:
     return {"messages": [response]}
 
 
-def get_state(state: dict) -> str:
+def get_state(state: State) -> str:
     messages = state["messages"]
     if isinstance(messages[-1], AIMessage) and messages[-1].tool_calls:
         return "add_tool_message"
     elif not isinstance(messages[-1], HumanMessage):
         return END
     return "info"
-
-
-class State(TypedDict):
-    messages: Annotated[list, add_messages]
 
 
 memory = MemorySaver()
@@ -156,7 +156,9 @@ while True:
         break
     output = None
     for output in graph.stream(
-        {"messages": [HumanMessage(content=user)]}, config=config, stream_mode="updates"
+        {"messages": [HumanMessage(content=user)]},  # type: ignore[arg-type]
+        config=config,
+        stream_mode="updates",
     ):
         last_message = next(iter(output.values()))["messages"][-1]
         last_message.pretty_print()
