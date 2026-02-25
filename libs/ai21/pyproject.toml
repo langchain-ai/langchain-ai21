@@ -20,8 +20,17 @@ disallow_untyped_defs = "True"
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4.0"
-langchain-core = "^0.3"
+langchain-core = ">=0.3.81,<0.4"
 ai21 = "^3.3.0"
+# CVE-2025-43859: h11 < 0.16.0 accepts malformed Chunked-Encoding bodies (critical).
+# Transitive via httpx -> httpcore. Remove once httpcore bumps its floor.
+h11 = ">=0.16.0"
+# CVE-2026-21441 / CVE-2025-66471 / CVE-2025-66418: urllib3 decompression vulnerabilities (high).
+# Transitive via requests/fsspec. Remove once parents bump their floor to >= 2.6.3.
+urllib3 = ">=2.6.3"
+# CVE-2026-1260: sentencepiece heap overflow (high).
+# Transitive via ai21-tokenizer. Remove once ai21-tokenizer bumps its floor.
+sentencepiece = ">=0.2.1"
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
