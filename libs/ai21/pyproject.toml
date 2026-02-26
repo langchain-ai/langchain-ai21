@@ -19,7 +19,7 @@ disallow_untyped_defs = "True"
 "Release Notes" = "https://github.com/langchain-ai/langchain-ai21/releases"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0"
+python = ">=3.10,<4.0"
 langchain-core = ">=0.3.81,<0.4"
 ai21 = "^3.3.0"
 # CVE-2025-43859: h11 < 0.16.0 accepts malformed Chunked-Encoding bodies (critical).
@@ -86,5 +86,9 @@ ruff = "^0.5"
 mypy = "^1.10"
 
 [tool.poetry.group.maestro.dependencies]
-langgraph = "^0.3.20"
+langgraph = "^1.0.0"
 langchain-openai = "^0.3.11"
+# CVE-2025-64439: langgraph-checkpoint < 3.0.0 has RCE via JsonPlusSerializer in "json" mode.
+# langgraph ^1.0 accepts >= 2.1.0,<5.0.0 but does not force 3.x; constrain explicitly.
+# Remove once langgraph requires >= 3.0.0 directly.
+langgraph-checkpoint = ">=3.0.0"
