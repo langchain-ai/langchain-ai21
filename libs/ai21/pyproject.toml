@@ -20,7 +20,7 @@ disallow_untyped_defs = "True"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
-langchain-core = ">=0.3.81,<0.4"
+langchain-core = ">=1.2.11,<1.3"
 ai21 = "^3.3.0"
 # CVE-2025-43859: h11 < 0.16.0 accepts malformed Chunked-Encoding bodies (critical).
 # Transitive via httpx -> httpcore. Remove once httpcore bumps its floor.
@@ -31,6 +31,15 @@ urllib3 = ">=2.6.3"
 # CVE-2026-1260: sentencepiece heap overflow (high).
 # Transitive via ai21-tokenizer. Remove once ai21-tokenizer bumps its floor.
 sentencepiece = ">=0.2.1"
+# GHSA-4h44-w6fm-548g: requests .netrc credential leak via malicious URLs (medium).
+# Transitive via langsmith/others. Remove once parents bump their floor to >= 2.32.4.
+requests = ">=2.32.4"
+# GHSA-2fvf-r6wq-7hqg / GHSA-765m-fmrp-9pjw: filelock TOCTOU symlink attacks (medium).
+# Transitive via virtualenv/huggingface-hub. Remove once parents bump their floor to >= 3.20.3.
+filelock = ">=3.20.3"
+# GHSA-grjc-gq5x-g595: orjson unlimited recursion for deeply nested JSON (medium).
+# Transitive via langgraph/langsmith. Remove once parents bump their floor to > 3.11.4.
+orjson = ">=3.11.5"
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
@@ -72,7 +81,7 @@ pytest-mock = "^3.10.0"
 syrupy = "^4.0.2"
 pytest-watcher = "^0.3.4"
 pytest-asyncio = "^0.21.1"
-langchain-tests = "0.3.1"
+langchain-tests = ">=1.1.0,<2"
 
 [tool.poetry.group.codespell.dependencies]
 codespell = "^2.2.0"
@@ -88,7 +97,7 @@ mypy = "^1.10"
 [tool.poetry.group.maestro.dependencies]
 langgraph = "^1.0.0"
 langchain-openai = "^0.3.11"
-# CVE-2025-64439: langgraph-checkpoint < 3.0.0 has RCE via JsonPlusSerializer in "json" mode.
-# langgraph ^1.0 accepts >= 2.1.0,<5.0.0 but does not force 3.x; constrain explicitly.
-# Remove once langgraph requires >= 3.0.0 directly.
-langgraph-checkpoint = ">=3.0.0"
+# GHSA-3hjr-j8jq-6rph: langgraph-checkpoint < 4.0.0 deserialization RCE via BaseCache (medium).
+# langgraph ^1.0 accepts >= 2.1.0,<5.0.0 but does not force 4.x; constrain explicitly.
+# Remove once langgraph requires >= 4.0.0 directly.
+langgraph-checkpoint = ">=4.0.0"
