@@ -23,7 +23,7 @@ from langchain_core.language_models.chat_models import (
     LangSmithParams,
     generate_from_stream,
 )
-from langchain_core.messages import BaseMessage
+from langchain_core.messages import AIMessage, BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult
 from langchain_core.runnables import Runnable
 from langchain_core.tools import BaseTool
@@ -230,7 +230,11 @@ class ChatAI21(BaseChatModel, AI21Base):
     def bind_tools(
         self,
         tools: Sequence[Union[Dict[str, Any], Type, Callable, BaseTool]],
+        *,
+        tool_choice: Optional[str] = None,
         **kwargs: Any,
-    ) -> Runnable[LanguageModelInput, BaseMessage]:
+    ) -> Runnable[LanguageModelInput, AIMessage]:
         formatted_tools = [convert_to_openai_tool(tool) for tool in tools]
+        if tool_choice is not None:
+            kwargs["tool_choice"] = tool_choice
         return super().bind(tools=formatted_tools, **kwargs)
