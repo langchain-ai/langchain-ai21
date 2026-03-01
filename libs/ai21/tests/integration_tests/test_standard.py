@@ -1,12 +1,12 @@
 """Standard LangChain interface tests"""
 
 import time
-from typing import Optional, Type
+from typing import Literal, Optional, Type
 
 import pytest
 from langchain_core.language_models import BaseChatModel
 from langchain_core.rate_limiters import InMemoryRateLimiter
-from langchain_standard_tests.integration_tests import ChatModelIntegrationTests
+from langchain_tests.integration_tests import ChatModelIntegrationTests
 
 from langchain_ai21 import ChatAI21
 
@@ -53,12 +53,20 @@ class TestAI21JambaMini(BaseTestAI21):
         super().test_tool_calling_with_no_arguments(model)
 
     @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
-    def test_structured_output(self, model: BaseChatModel) -> None:
-        super().test_structured_output(model)
+    def test_structured_output(
+        self,
+        model: BaseChatModel,
+        schema_type: Literal["pydantic", "typeddict", "json_schema"],
+    ) -> None:
+        super().test_structured_output(model, schema_type)
 
     @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
-    async def test_structured_output_async(self, model: BaseChatModel) -> None:
-        await super().test_structured_output_async(model)
+    async def test_structured_output_async(
+        self,
+        model: BaseChatModel,
+        schema_type: Literal["pydantic", "typeddict", "json_schema"],
+    ) -> None:
+        await super().test_structured_output_async(model, schema_type)
 
     @pytest.mark.xfail(reason="Requires tool calling & stream - still WIP")
     def test_structured_output_pydantic_2_v1(self, model: BaseChatModel) -> None:
