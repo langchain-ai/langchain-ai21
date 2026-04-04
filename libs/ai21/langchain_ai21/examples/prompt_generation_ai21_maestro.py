@@ -155,8 +155,8 @@ while True:
         print("AI: Bye bye")
         break
     output = None
-    for output in graph.stream(
-        {"messages": [HumanMessage(content=user)]},  # type: ignore[arg-type]
+    for output in graph.stream(  # type: ignore[call-overload]
+        {"messages": [HumanMessage(content=user)]},
         config=config,
         stream_mode="updates",
     ):
