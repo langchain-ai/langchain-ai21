@@ -40,6 +40,7 @@ filelock = ">=3.20.3"
 # GHSA-grjc-gq5x-g595: orjson unlimited recursion for deeply nested JSON (medium).
 # Transitive via langgraph/langsmith. Remove once parents bump their floor to > 3.11.4.
 orjson = ">=3.11.5"
+typing-extensions = ">=4.13.0"
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
