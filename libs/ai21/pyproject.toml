@@ -76,10 +76,15 @@ optional = true
 [tool.poetry.group.dev.dependencies]
 
 [tool.poetry.group.test.dependencies]
-pytest = "^7.3.0"
+# GHSA-6w46-j5rx-g56g: pytest tmpdir handling allows local DoS/privilege impact (medium).
+# Keep at >= 9.0.3 until older supported pytest lines are fixed.
+pytest = ">=9.0.3,<10"
+# GHSA-5239-wwwm-4pmq: pygments ReDoS in AdlLexer (medium).
+# Test-only dependency via pytest; keep explicit floor until all test tooling forces >= 2.20.0.
+pygments = ">=2.20.0"
 freezegun = "^1.2.2"
 pytest-mock = "^3.10.0"
-syrupy = "^4.0.2"
+syrupy = ">=5.0.0,<6"
 pytest-watcher = "^0.3.4"
 pytest-asyncio = "^0.21.1"
 langchain-tests = ">=1.1.0,<2"
