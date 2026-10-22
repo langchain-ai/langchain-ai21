@@ -23,7 +23,7 @@ python = ">=3.10,<4.0"
 fsspec = ">=2026.6.0"
 langgraph-sdk = ">=0.4.4"
 langchain-core = ">=1.4.0,<2"
-ai21 = "^3.3.0"
+ai21 = ">=3.3.0"
 # CVE-2025-43859: h11 < 0.16.0 accepts malformed Chunked-Encoding bodies (critical).
 # Transitive via httpx -> httpcore. Remove once httpcore bumps its floor.
 h11 = ">=0.16.0"
