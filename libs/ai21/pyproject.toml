@@ -36,7 +36,7 @@ sentencepiece = ">=0.2.1"
 # GHSA-4h44-w6fm-548g: requests .netrc credential leak via malicious URLs (medium).
 # Transitive via langsmith/others. Remove once parents bump their floor to >= 2.32.4.
 requests = ">=2.32.4"
-# GHSA-2fvf-r6wq-7hqg / GHSA-765m-fmrp-9pjw / SEC-4342: filelock vulnerabilities.
+# GHSA-2fvf-r6wq-7hqg / GHSA-765m-fmrp-9pjw: filelock vulnerabilities.
 # Transitive via virtualenv/huggingface-hub. filelock >= 4.2.4 requires Python >= 3.11.
 filelock = [
     { version = ">=4.2.4", python = ">=3.11" },
